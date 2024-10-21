@@ -13,6 +13,8 @@ public class Fridge {
 
   public Fridge() {
     groceryList = new ArrayList<>();
+
+
     // dummy groceries.
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Date date1 = new Date();
@@ -28,9 +30,9 @@ public class Fridge {
     }
 
 
-    addGrocery("Milk", (float)1.5, date1, (float)29.9, "liters");
-    addGrocery("Bananas", (float)5, date2, (float)5.40, "units");
-    addGrocery("eggs", (float)12, date3, (float)2.23, "Units");
+    addGrocery("Milk", (double)1.5, date1, (double)29.9, "liters");
+    addGrocery("Bananas", (double)5, date2, (double)5.40, "units");
+    addGrocery("eggs", (double)12, date3, (double)2.23, "Units");
   }
 
   /**
@@ -41,8 +43,8 @@ public class Fridge {
    * @param pricePerUnit
    * @param measuringUnit
    */
-  private void addGrocery(String nameOfGrocery, float amount, Date expirationDate,
-      float pricePerUnit, String measuringUnit) {
+  private void addGrocery(String nameOfGrocery, double amount, Date expirationDate,
+      double pricePerUnit, String measuringUnit) {
     Grocery newGrocery = new Grocery(nameOfGrocery, amount, expirationDate, pricePerUnit,
         measuringUnit);
     groceryList.add(newGrocery);
@@ -58,19 +60,18 @@ public class Fridge {
     System.out.print("Please write the name of the new Grocery: ");
     String inpGroceryName = scanner.nextLine();
     System.out.print("Please write the amount of the new Grocery: ");
-    float inpAmount = scanner.nextFloat(); // uses comma",", not dot"."
+    double inpAmount = scanner.nextDouble(); // uses comma",", not dot"."
     scanner.nextLine(); //swallws the enter typed which would otherwise be an unwanted input for the next scanner
     System.out.println("Please write the expiration date of the new Grocery.");
     System.out.print("The format is as follows: yyyy-MM-dd: ");
     String inpExpirationDate = scanner.nextLine();
     System.out.print("Please write the price per unit of the new Grocery: ");
-    float inpPricePerUnit = scanner.nextFloat();
+    double inpPricePerUnit = scanner.nextDouble();
     scanner.nextLine(); //swallws the enter typed which would otherwise be an unwanted input for the next scanner
     System.out.print("Please write the measuring unit of the new Grocery: ");
     String inpMeasuringUnit = scanner.nextLine();
 
     // TODO make the check exeption
-    //todo convert String date to Date date
     try {
        expirationDate = dateFormat.parse(inpExpirationDate);
     } catch (ParseException e) {
@@ -82,9 +83,9 @@ public class Fridge {
 
     addGrocery(inpGroceryName, inpAmount, expirationDate, inpPricePerUnit, inpMeasuringUnit);
   }
-  // returns how much of the specified argument is currently in the fridge, as a float.
-  private float amountOfGrocery(String inpGrocery) {
-    float numberOfGroceries = 0;
+  // returns how much of the specified argument is currently in the fridge, as a double.
+  private double amountOfGrocery(String inpGrocery) {
+    double numberOfGroceries = 0;
     String grocery = inpGrocery.toLowerCase();
     for (int i = 0; i < groceryList.size(); i++) {
       String currentGrocery = groceryList.get(i).getNameOfGrocery(); // get name of grocery with index i
@@ -116,11 +117,13 @@ public class Fridge {
     }
     return returnString.toString();
   }
+
   // Find out how to deal with multiple elements with different expiration dates
-  private void removeGrocery(String grocery){
+  private void removeGrocery(String grocery) {
     for (int i = 0; i < groceryList.size(); i++) {
-      if (groceryList.get(i).getNameOfGrocery().equals(grocery)){
+      if (groceryList.get(i).getNameOfGrocery().equals(grocery)) {
         groceryList.remove(i);
+        i++; // because all the elements after gets shifted. All indexes after subtracts 1.
       }
     }
   }
@@ -132,12 +135,13 @@ public class Fridge {
     removeGrocery(grocery);
   }
 
-  public void printFridgeContent(){
+  public void printFridgeContent() {
     StringBuilder returnString = new StringBuilder("The fridge currently contains:" + "\n");
     for (int i = 0; i < groceryList.size(); i++) {
       Grocery groceryi = groceryList.get(i);
       returnString.append(
-          groceryi.getAmountOfGrocery() + " " + groceryi.getMeasuringUnit() + " of " + groceryi.getNameOfGrocery() + "\n"
+          groceryi.getAmountOfGrocery() + " " + groceryi.getMeasuringUnit()
+          + " of " + groceryi.getNameOfGrocery() + "\n"
       );
     }
     System.out.println(returnString);
@@ -158,12 +162,14 @@ public class Fridge {
     ArrayList<Integer> indexOfExpiredGroceries;
     indexOfExpiredGroceries = findIndexOfExpiredGroceries();
     StringBuilder returnString = new StringBuilder();
-    float costOfExpiredGroceries = 0;
-    if (indexOfExpiredGroceries.isEmpty()){
+    double costOfExpiredGroceries = 0;
+    if (indexOfExpiredGroceries.isEmpty()) {
       returnString.append("There are no expired groceries!");
     }
     returnString.append("Expired gorceries: \n");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEEEE dd MMMMMMMMM yyyy"); // skriver ut på norsk
+    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEEEE dd. MMMMMMMMM yyyy"); // skriver ut på norsk
+    //SimpleDateFormat dateFormat = new SimpleDateFormat("dd. MM yyyy"); //as only numbers
+
     for (int i = 0; i < indexOfExpiredGroceries.size(); i++) {
       Grocery currentGrocery = groceryList.get(indexOfExpiredGroceries.get(i));
       returnString.append(
@@ -179,8 +185,8 @@ public class Fridge {
     System.out.println(returnString.toString());
   }
 
-  private float getValueOfGroceriesInFridge(){
-    float valueOfFridge = 0;
+  private double getValueOfGroceriesInFridge(){
+    double valueOfFridge = 0;
     for (int i = 0; i < groceryList.size(); i++) {
       Grocery currentGrocery = groceryList.get(i);
       valueOfFridge += currentGrocery.getAmountOfGrocery() * currentGrocery.getPricePerUnit();

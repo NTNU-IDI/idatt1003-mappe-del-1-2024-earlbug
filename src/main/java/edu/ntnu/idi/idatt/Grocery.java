@@ -1,20 +1,16 @@
 package edu.ntnu.idi.idatt;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 
 public class Grocery {
 
   private String  nameOfGrocery;
-  private float   amount;
+  private double   amount;
   private Date    expirationDate;
-  private float   pricePerUnit;
+  private double   pricePerUnit;
   private String  measuringUnit;
 
-  public Grocery(String nameOfGrocery, float amount, Date expirationDate, float pricePerUnit, String measuringUnit) {
+  public Grocery(String nameOfGrocery, double amount, Date expirationDate, double pricePerUnit, String measuringUnit) {
     this.nameOfGrocery = nameOfGrocery;
     this.amount = amount;
     this.expirationDate = expirationDate;
@@ -25,13 +21,13 @@ public class Grocery {
   public String getNameOfGrocery(){
     return this.nameOfGrocery;
   }
-  public float getAmountOfGrocery(){
+  public double getAmountOfGrocery(){
     return this.amount;
   }
   public Date getExpirationDate(){
-    return this.expirationDate; //find out if it Strong or Date is most desirable
+    return this.expirationDate;
   }
-  public float getPricePerUnit(){
+  public double getPricePerUnit(){
     return this.pricePerUnit;
   }
   public String getMeasuringUnit(){
