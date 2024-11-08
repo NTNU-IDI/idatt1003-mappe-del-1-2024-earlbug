@@ -7,14 +7,9 @@ public class Main {
   public static void main(String[] args) {
     System.out.println("Hello World!");
 
-    Fridge fridge = new Fridge();
-
-    System.out.println();
-    fridge.printFridgeContent();
-    fridge.printExpiredgroceries();
-    fridge.printTotalValueOfGroceriesInFridge();
-
-
-
+    //Starter user interface, og darmed hele programmet
+    UserInterface ui = new UserInterface();
+    ui.init();
+    ui.start();
   }
 }

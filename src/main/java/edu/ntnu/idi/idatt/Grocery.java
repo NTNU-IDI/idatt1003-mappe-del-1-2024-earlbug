@@ -4,12 +4,24 @@ import java.util.Date;
 
 public class Grocery {
 
-  private String  nameOfGrocery;
-  private double   amount;
-  private Date    expirationDate;
-  private double   pricePerUnit;
-  private String  measuringUnit;
+  private final String nameOfGrocery;
+  private double amount;
+  private final Date expirationDate;
+  private final double pricePerUnit;
+  private final String measuringUnit;
 
+
+
+  /**
+   * Constructor for grocery class.
+   * Sets all parameters.
+   *
+   * @param nameOfGrocery grocery name
+   * @param amount amount of the specified grocery,
+   * @param expirationDate expiration date of the grocery as ad date object
+   * @param pricePerUnit price per measuring unit
+   * @param measuringUnit measuring unit of the grocery
+   */
   public Grocery(String nameOfGrocery, double amount, Date expirationDate, double pricePerUnit, String measuringUnit) {
     this.nameOfGrocery = nameOfGrocery;
     this.amount = amount;
@@ -17,26 +29,35 @@ public class Grocery {
     this.pricePerUnit = pricePerUnit;
     this.measuringUnit = measuringUnit;
   }
+  // todo public enum unit, gjør grocery enhet lettere?
 
-  public String getNameOfGrocery(){
+  public String getNameOfGrocery() {
     return this.nameOfGrocery;
   }
-  public double getAmountOfGrocery(){
+  public double getAmountOfGrocery() {
     return this.amount;
   }
-  public Date getExpirationDate(){
+  public Date getExpirationDate() {
     return this.expirationDate;
   }
-  public double getPricePerUnit(){
+  public double getPricePerUnit() {
     return this.pricePerUnit;
   }
-  public String getMeasuringUnit(){
+  public String getMeasuringUnit() {
     return this.measuringUnit;
   }
 
+  public void setAmount(double setAmountTo) {
+    this.amount = setAmountTo;
+  }
+
+  public void ChangeAmout(double amountChanged) {
+    this.amount += amountChanged;
+  }
 
 
-  @Override // does this have any unwanted side effects? or can i t be used for somthing else?
+
+  @Override // does this have any unwanted side effects? or can it be used for somthing else?
   public String toString() {
     return this.nameOfGrocery;
   }
