@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class Fridge {
 
-  ArrayList<Grocery> groceryList;
+  private ArrayList<Grocery> groceryList;
 
   /**
    * Creates an instance of Fridge.
@@ -77,7 +77,7 @@ public class Fridge {
 
   public ArrayList<Grocery> findExpiredGroceries() {
     return groceryList.stream()
-        .filter(grocery -> grocery.getExpirationDate().after(new Date()))
+        .filter(grocery -> grocery.getExpirationDate().before(new Date()))
         // Collects the elements of a stream to an ArrayList
         // Normally it would be collect to a list.(Collector.toList())
         .collect(Collectors.toCollection/*static, makes new empty collection*/(ArrayList::new));
@@ -98,4 +98,7 @@ public class Fridge {
   public ArrayList<Grocery> getGroceryList() {
     return groceryList;
   }
+
+
+
 }
