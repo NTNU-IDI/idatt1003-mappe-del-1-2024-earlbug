@@ -1,19 +1,20 @@
 package edu.ntnu.idi.idatt;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 
 public class Fridge {
 
   ArrayList<Grocery> groceryList;
 
+  /**
+   * Creates an instance of Fridge.
+   */
   public Fridge() {
     groceryList = new ArrayList<>();
-
   }
 
   /**
@@ -27,54 +28,59 @@ public class Fridge {
 
   //todo find out where it is the most appropriate to have input tests:
   //to have the tests in the "askFor" methods and be certain the result passed to the next method is clean
-  //or to have the test in the secound method, which throws an exeption, vhech can easly be caugth by the ask for methods
+  //or to have the test in the second method, which throws an exeption, vhech can easly be caugth by the ask for methods
   public void addGrocery(String nameOfGrocery, double amount, Date expirationDate,
       double pricePerUnit, String measuringUnit) {
-    Grocery newGrocery = new Grocery(nameOfGrocery, amount, expirationDate, pricePerUnit,
-        measuringUnit);
+    Grocery newGrocery = new Grocery(
+        nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit);
     groceryList.add(newGrocery);
   }
 
 
 
-  // returns how much of the specified argument is currently in the fridge, as a double.
-  public double amountOfGrocery(String inpGrocery) {
-    double numberOfGroceries = 0;
-    String grocery = inpGrocery.toLowerCase();
-    for (int i = 0; i < groceryList.size(); i++) {
-      String currentGrocery = groceryList.get(i).getNameOfGrocery(); // get name of grocery with index i.
-      if (currentGrocery.equals(grocery)) { // if grocery i is the same as the method input
-        numberOfGroceries += groceryList.get(i).getAmountOfGrocery(); // add the amount found to the to be returned value
-      }
-    }
-    return numberOfGroceries;
+
+
+  /**
+   * Returns how much of the specified grocery is currently in the fridge, as a double.
+   *
+   * @param inpGrocery The grocery you want to find the amount of.
+   *
+   * @return Returns how much the fridge has of the grocery.
+   */
+  public double getAmountOfGrocery(String inpGrocery) {
+    return groceryList.stream()
+        .filter(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGrocery))
+        // For each Grocery element in groceryList, use grocery.getAmountOgGrocery
+        .mapToDouble(Grocery::getAmountOfGrocery)
+        .sum();
   }
 
 
 
   // Find out how to deal with multiple elements with different expiration dates
-  public void removeGrocery(String grocery) {
-    for (int i = 0; i < groceryList.size(); i++) {
-      if (groceryList.get(i).getNameOfGrocery().equals(grocery)) {
-        groceryList.remove(i);
-        i++; // because all the elements after gets shifted. All indexes after subtracts 1.
-      }
-    }
+
+  /**
+   * Removes specified grocery.
+   *
+   * @param inpGrocery Grocery which shall be removed.
+   */
+  public void removeGrocery(String inpGrocery) {
+    groceryList.removeIf(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGrocery));
   }
 
 
+  /**
+   * Finds all expired groceries.
+   *
+   * @return ArrayList of expired grocery objects.
+   */
 
-
-
-  public ArrayList<Integer> findIndexOfExpiredGroceries(){
-    ArrayList<Integer> indexOfExpiredGroceries = new ArrayList<>();
-    Date currentDate = new Date();
-    for (int i = 0; i < groceryList.size(); i++) {
-      if(currentDate.before(groceryList.get(i).getExpirationDate())) {
-        indexOfExpiredGroceries.add(i);
-      }
-    }
-    return indexOfExpiredGroceries;
+  public ArrayList<Grocery> findExpiredGroceries() {
+    return groceryList.stream()
+        .filter(grocery -> grocery.getExpirationDate().after(new Date()))
+        // Collects the elements of a stream to an ArrayList
+        // Normally it would be collect to a list.(Collector.toList())
+        .collect(Collectors.toCollection/*static, makes new empty collection*/(ArrayList::new));
   }
 
   /**
@@ -83,13 +89,9 @@ public class Fridge {
    * @return value of items in fridge.
    */
   public double getValueOfGroceriesInFridge() {
-    double valueOfFridge = 0;
-    for (int i = 0; i < groceryList.size(); i++) {
-      Grocery currentGrocery = groceryList.get(i);
-      valueOfFridge += currentGrocery.getAmountOfGrocery() * currentGrocery.getPricePerUnit();
-
-    }
-    return valueOfFridge;
+    return groceryList.stream()
+        .mapToDouble(grocery -> grocery.getAmountOfGrocery() * grocery.getPricePerUnit())
+        .sum();
   }
 
   // getter grocerylist

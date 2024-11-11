@@ -10,16 +10,17 @@ public class UserInterface {
 
   Fridge fridge;
 
-  public void UserInterface(){
+  /**
+   * Fridge constructor.
+   */
+  public void UserInterface() {
 
   }
 
-
-  public void start(){
-
-  }
-
-  public void init(){
+  /**
+   * initializes the program by calling all the necessary objects.
+   */
+  public void init() {
     fridge = new Fridge();
 
 
@@ -44,20 +45,14 @@ public class UserInterface {
 
   }
 
-  public void printFridgeContent() {
-    StringBuilder returnString = new StringBuilder("The fridge currently contains:" + "\n");
-    for (int i = 0; i < fridge.getGroceryList().size(); i++) {
-      Grocery groceryi = fridge.getGroceryList().get(i);
-      returnString.append(
-          groceryi.getAmountOfGrocery() + " " + groceryi.getMeasuringUnit()
-              + " of " + groceryi.getNameOfGrocery() + "\n"
-      );
-    }
-    System.out.println(returnString);
+  public void start(){
+
   }
 
-
-  public void askForGrocery() {
+  /**
+   * Asks the user for all the details of the grocery it wants to add.
+   */
+  public void askForGroceryToAdd() {
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Date expirationDate = new Date();
@@ -87,6 +82,24 @@ public class UserInterface {
     fridge.addGrocery(inpGroceryName, inpAmount, expirationDate, inpPricePerUnit, inpMeasuringUnit);
   }
 
+  /**
+   * Prints out all items in the fridge, with all it's attributes.
+   */
+  public void printFridgeContent() {
+    StringBuilder returnString = new StringBuilder("The fridge currently contains:" + "\n");
+    for (int i = 0; i < fridge.getGroceryList().size(); i++) {
+      Grocery groceryi = fridge.getGroceryList().get(i);
+      returnString.append(
+          groceryi.getAmountOfGrocery() + " " + groceryi.getMeasuringUnit()
+              + " of " + groceryi.getNameOfGrocery() + "\n"
+      );
+    }
+    System.out.println(returnString);
+  }
+
+  /**
+   * Asks for an input of what grocery the user wants removed.
+   */
   public void askToRemoveGrocery() {
     Scanner scanner = new Scanner(System.in);
     System.out.print("What grocery do you want to remove?: ");
@@ -94,36 +107,45 @@ public class UserInterface {
     fridge.removeGrocery(grocery);
   }
 
-  public void printExpiredgroceries(){
-    ArrayList<Integer> indexOfExpiredGroceries;
-    indexOfExpiredGroceries = fridge.findIndexOfExpiredGroceries();
+  /**
+   * Prints a list of all the expired groceries
+   * Name, amount and expiration date.
+   */
+  public void printExpiredgroceries() {
+
+    ArrayList<Grocery> expiredGroceries;
+    expiredGroceries = fridge.findExpiredGroceries();
     StringBuilder returnString = new StringBuilder();
     double costOfExpiredGroceries = 0;
-    if (indexOfExpiredGroceries.isEmpty()) {
+
+    if (expiredGroceries.isEmpty()) {
       returnString.append("There are no expired groceries!");
     }
     returnString.append("Expired gorceries: \n");
     SimpleDateFormat dateFormat = new SimpleDateFormat("EEEEEE dd. MMMMMMMMM yyyy"); // skriver ut på norsk
     //SimpleDateFormat dateFormat = new SimpleDateFormat("dd. MM yyyy"); //as only numbers
-
-    for (int i = 0; i < indexOfExpiredGroceries.size(); i++) {
-      Grocery currentGrocery = fridge.getGroceryList().get(indexOfExpiredGroceries.get(i));
-      returnString.append(
-          currentGrocery.getAmountOfGrocery() + " "
-              + currentGrocery.getMeasuringUnit() + " of "
-              + currentGrocery.getNameOfGrocery() + " expired "
-              + dateFormat.format(currentGrocery.getExpirationDate()) + ".\n"
+    for (int i = 0; i < expiredGroceries.size(); i++) {
+      Grocery currentGrocery = fridge.getGroceryList().get(i);
+      returnString.append(currentGrocery.getAmountOfGrocery() + " "
+          + currentGrocery.getMeasuringUnit() + " of "
+          + currentGrocery.getNameOfGrocery() + " expired "
+          + dateFormat.format(currentGrocery.getExpirationDate()) + ".\n"
       );
       costOfExpiredGroceries += currentGrocery.getPricePerUnit() * currentGrocery.getAmountOfGrocery();
-
     }
     returnString.append("\n For a total of " + costOfExpiredGroceries + " NOK");
     System.out.println(returnString.toString());
   }
 
+  /**
+   * Prints the amount of the specified grocery.
+   *
+   * @param inpGrocery The grocery which shall be counted.
+   *
+   */
   public void printAmountOfGrocery(String inpGrocery) {
     StringBuilder returnString = new StringBuilder();
-    if (fridge.amountOfGrocery(inpGrocery) > 0) {
+    if (fridge.getAmountOfGrocery(inpGrocery) > 0) {
       String measuringUnit = new String();
       // finds the measuring unit
       for (int i = 0; i < fridge.getGroceryList().size(); i++) {
@@ -134,7 +156,7 @@ public class UserInterface {
       }
       returnString.append(
           "The fridge contains "
-              + fridge.amountOfGrocery(inpGrocery) + " "
+              + fridge.getAmountOfGrocery(inpGrocery) + " "
               + measuringUnit + " of "
               + inpGrocery + "."
       );

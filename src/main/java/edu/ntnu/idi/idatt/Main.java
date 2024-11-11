@@ -12,4 +12,16 @@ public class Main {
     ui.init();
     ui.start();
   }
+
+  //Todo Lære meg treams!! veldig viktig og nyttig
+  //finne ut av lambda
+  // string format
+
+  //forbedriger på sikt:
+
+  // Ha et lager av standard/ferdiglagde gorceries, med navn,
+  // så man bare kan velge en grocery neste gang.
+  // name, price og measuringunot er allerede utfylt.
+
+
 }
