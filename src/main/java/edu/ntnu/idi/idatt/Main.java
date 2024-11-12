@@ -13,7 +13,7 @@ public class Main {
     ui.start();
   }
 
-  //Todo Lære meg treams!! veldig viktig og nyttig
+  //Todo Lære meg streams!! veldig viktig og nyttig
   //finne ut av lambda
   // string format
 
@@ -21,7 +21,9 @@ public class Main {
 
   // Ha et lager av standard/ferdiglagde gorceries, med navn,
   // så man bare kan velge en grocery neste gang.
+  // Koble måleenheter til navnet til varen.
   // name, price og measuringunot er allerede utfylt.
+
 
 
 }
