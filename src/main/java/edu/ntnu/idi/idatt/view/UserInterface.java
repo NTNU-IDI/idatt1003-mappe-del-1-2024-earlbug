@@ -1,6 +1,9 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.view;
 
 
+import edu.ntnu.idi.idatt.controllers.Fridge;
+import edu.ntnu.idi.idatt.models.Grocery;
+import edu.ntnu.idi.idatt.utils.Validators;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -97,7 +100,7 @@ public class UserInterface {
           askToRemoveGrocery();
           break;
         case 4:
-          printExpiredgroceries();
+          printExpiredGroceries();
           break;
         case 5:
           System.out.println("What grocery do you want to check?:");
@@ -166,7 +169,7 @@ public class UserInterface {
         inpExpirationDate = scanner.nextLine();
         expirationDate = dateFormat.parse(inpExpirationDate);
         if (expirationDate.before(new Date())) {
-          System.out.println("Note; the grocery has already expired.");
+          printYellow("Note: the grocery has already expired.");
         }
         System.out.println();
         break;
@@ -234,14 +237,30 @@ public class UserInterface {
     Scanner scanner = new Scanner(System.in);
     System.out.print("What grocery do you want to remove?: ");
     String grocery = scanner.nextLine();
-    fridge.removeGrocery(grocery);
+    if (fridge.groceryExists(grocery)) {
+      while (true) {
+        try {
+          System.out.println("How much do you want to remove?");
+          double inpAmount = Validators.parseToPositiveFloat(scanner.nextLine());
+          fridge.removeGrocery(grocery, inpAmount);
+
+          break;
+        } catch (IllegalArgumentException e) {
+          System.out.println();
+          printRed(e.getMessage());
+        }
+      }
+
+    } else {
+      printYellow("There are no " + grocery + " in the fridge.");
+    }
   }
 
   /**
    * Prints a list of all the expired groceries
    * Name, amount and expiration date.
    */
-  public void printExpiredgroceries() {
+  public void printExpiredGroceries() {
 
     ArrayList<Grocery> expiredGroceries;
     expiredGroceries = fridge.findExpiredGroceries();
@@ -275,6 +294,7 @@ public class UserInterface {
    * @param inpGrocery The grocery which shall be counted.
    */
   public void printAmountOfGrocery(String inpGrocery) {
+
     StringBuilder returnString = new StringBuilder();
     if (fridge.getAmountOfGrocery(inpGrocery) > 0) {
       String measuringUnit;
@@ -313,11 +333,20 @@ public class UserInterface {
   }
 
   /**
-   * Prints red text, used for example when printing errormessages.
+   * Prints red text, used for example when printing error messages.
+   *
    * @param inpString The string to be printed in red.
    */
   public void printRed(String inpString) {
     System.out.println("\u001B[31m" + inpString + "\u001B[0m");
   }
 
+  /**
+   * Prints yellow text, used for example when printing warning messages.
+   *
+   * @param inpString The string to be printed in yellow.
+   */
+  public void printYellow(String inpString) {
+    System.out.println("\u001B[33m" + inpString + "\u001B[0m");
+  }
 }

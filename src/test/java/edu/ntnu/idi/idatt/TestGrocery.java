@@ -2,12 +2,13 @@ package edu.ntnu.idi.idatt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import edu.ntnu.idi.idatt.models.Grocery;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
 
-public class GroceryTest {
+public class TestGrocery {
   Grocery grocery1;
   Grocery grocery2;
   Grocery grocery3;
@@ -16,7 +17,7 @@ public class GroceryTest {
   Date date1 = new Date();
   Date date2 = new Date(); //today's date
   Date date3 = new Date();
-  public GroceryTest() {
+  public TestGrocery() {
 
     try {
       date1 = dateFormat.parse("2023-10-30");

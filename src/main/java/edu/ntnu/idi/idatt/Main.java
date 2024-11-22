@@ -1,7 +1,6 @@
 package edu.ntnu.idi.idatt;
 
-import java.util.Date;
-import java.util.Scanner;
+import edu.ntnu.idi.idatt.view.UserInterface;
 
 public class Main {
   public static void main(String[] args) {
@@ -14,6 +13,7 @@ public class Main {
   }
 
   //Todo Lære meg streams!! veldig viktig og nyttig
+  //Todo fjerne mengde grocery
   //finne ut av lambda
   // string format
 
@@ -23,6 +23,9 @@ public class Main {
   // så man bare kan velge en grocery neste gang.
   // Koble måleenheter til navnet til varen.
   // name, price og measuringunot er allerede utfylt.
+
+  // Find out how to deal with multiple elements with different expiration dates
+
 
 
 

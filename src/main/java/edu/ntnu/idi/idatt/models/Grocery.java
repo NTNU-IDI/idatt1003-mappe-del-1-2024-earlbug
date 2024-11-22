@@ -1,4 +1,4 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.models;
 
 import java.util.Date;
 
@@ -9,9 +9,6 @@ public class Grocery {
   private final Date expirationDate;
   private final double pricePerUnit;
   private final String measuringUnit;
-
-
-
 
   /**
    * Constructor for grocery class.
@@ -52,7 +49,7 @@ public class Grocery {
     this.amount = setAmountTo;
   }
 
-  public void ChangeAmout(double amountChanged) {
+  public void changeAmount(double amountChanged) {
     this.amount += amountChanged;
   }
 

@@ -1,8 +1,10 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.controllers;
 
+import edu.ntnu.idi.idatt.models.Grocery;
+import edu.ntnu.idi.idatt.utils.Validators;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -19,26 +21,18 @@ public class Fridge {
 
   /**
    * Adds one or more groceries to the fridge.
+   *
    * @param nameOfGrocery name of the grocery added.
    * @param amount specifies how much of the object is added.
    * @param expirationDate specifies at what date the grocery expires as a Date object
    * @param pricePerUnit
    * @param measuringUnit
    */
-
-  //todo find out where it is the most appropriate to have input tests:
-  //to have the tests in the "askFor" methods and be certain the result passed to the next method is clean
-  //or to have the test in the second method, which throws an exeption, vhech can easly be caugth by the ask for methods
-  public void addGrocery(String nameOfGrocery, double amount, Date expirationDate,
-      double pricePerUnit, String measuringUnit) {
+  public void addGrocery(String nameOfGrocery, double amount, Date expirationDate, double pricePerUnit, String measuringUnit) {
     Grocery newGrocery = new Grocery(
         nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit);
     groceryList.add(newGrocery);
   }
-
-
-
-
 
   /**
    * Returns how much of the specified grocery is currently in the fridge, as a double.
@@ -55,26 +49,53 @@ public class Fridge {
         .sum();
   }
 
-
-
-  // Find out how to deal with multiple elements with different expiration dates
-
   /**
    * Removes specified grocery.
    *
    * @param inpGrocery Grocery which shall be removed.
    */
-  public void removeGrocery(String inpGrocery) {
-    groceryList.removeIf(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGrocery));
-  }
+  public void removeGrocery(String inpGrocery, double amount) {
 
+    Validators.checkIfFloatIsPositive(amount);
+    // float AmountLeftToBeRemoved = -amount;
+    groceryList.sort(
+        Comparator.comparing(Grocery::getExpirationDate)); // Sorts array after exp.date.
+    for (int i = 0; i < groceryList.size(); i++) {
+      if (groceryList.get(i).getNameOfGrocery().equalsIgnoreCase(inpGrocery)) { // If name match
+        // If there are more grocery left to remove, remove current grocery(i) object
+        // and subtract its amount from amount.
+        if (groceryList.get(i).getAmountOfGrocery() < amount) {
+          amount -= groceryList.get(i).getAmountOfGrocery();
+          groceryList.remove(i);
+          i -= 1; // The all indexes after the removed object will be subtracted by 1.
+        } else { // Remove amount from grocery.
+          groceryList.get(i).changeAmount(-amount);
+          System.out.println("Removal was a success");
+          amount = 0;
+          break;
+        }
+      }
+    }
+    if (amount > 0) {
+      System.out.println("All the " + inpGrocery + " was removed.");
+    }
+  }
+  /*
+  private static void removeGroceryValidator(String inpGrocery, double amount) {
+    if (amount < 0 || amount == string) {
+      throw new IllegalArgumentException("Amount must be positive double value.");
+    }
+    if (inpGrocery) {
+
+    }
+  }
+*/
 
   /**
    * Finds all expired groceries.
    *
    * @return ArrayList of expired grocery objects.
    */
-
   public ArrayList<Grocery> findExpiredGroceries() {
     return groceryList.stream()
         .filter(grocery -> grocery.getExpirationDate().before(new Date()))
@@ -92,6 +113,18 @@ public class Fridge {
     return groceryList.stream()
         .mapToDouble(grocery -> grocery.getAmountOfGrocery() * grocery.getPricePerUnit())
         .sum();
+  }
+
+  /**
+   * Finds out if a grocery exists in the fridge.
+   *
+   * @param inpGroceryString Checks in the name matches any name present in the fridge.
+   *
+   * @return  Boolean if the grocery is found or not.
+   */
+  public boolean groceryExists(String inpGroceryString) {
+    return groceryList.stream()
+        .anyMatch(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGroceryString));
   }
 
   // getter grocerylist
