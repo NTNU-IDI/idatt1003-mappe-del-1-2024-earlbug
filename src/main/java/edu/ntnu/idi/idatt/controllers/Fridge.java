@@ -1,7 +1,7 @@
 package edu.ntnu.idi.idatt.controllers;
 
 import edu.ntnu.idi.idatt.models.Grocery;
-import edu.ntnu.idi.idatt.utils.Validators;
+import edu.ntnu.idi.idatt.utils.ParamValidators;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -29,6 +29,16 @@ public class Fridge {
    * @param measuringUnit
    */
   public void addGrocery(String nameOfGrocery, double amount, Date expirationDate, double pricePerUnit, String measuringUnit) {
+    try {
+      ParamValidators.validateString(nameOfGrocery);
+      ParamValidators.checkIfDoubleIsPositive(amount);
+      ParamValidators.parseStringToDateAndValidate(expirationDate.toString());
+      ParamValidators.checkIfDoubleIsPositive(pricePerUnit);
+      ParamValidators.validateString(measuringUnit);
+    } catch (IllegalArgumentException e) {
+      throw e;
+    }
+
     Grocery newGrocery = new Grocery(
         nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit);
     groceryList.add(newGrocery);
@@ -55,11 +65,17 @@ public class Fridge {
    * @param inpGrocery Grocery which shall be removed.
    */
   public void removeGrocery(String inpGrocery, double amount) {
+    try {
+      ParamValidators.validateString(inpGrocery);
+      ParamValidators.checkIfDoubleIsPositive(amount);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException(e);
+    }
 
-    Validators.checkIfFloatIsPositive(amount);
-    // float AmountLeftToBeRemoved = -amount;
     groceryList.sort(
-        Comparator.comparing(Grocery::getExpirationDate)); // Sorts array after exp.date.
+        Comparator.comparing(Grocery::getExpirationDate)); // Sorts array based on exp.date.
+
+
     for (int i = 0; i < groceryList.size(); i++) {
       if (groceryList.get(i).getNameOfGrocery().equalsIgnoreCase(inpGrocery)) { // If name match
         // If there are more grocery left to remove, remove current grocery(i) object
