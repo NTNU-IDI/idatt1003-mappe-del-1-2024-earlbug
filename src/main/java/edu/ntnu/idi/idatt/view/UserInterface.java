@@ -16,6 +16,8 @@ public class UserInterface {
   Fridge fridge;
   boolean programRunning;
   Scanner scanner;
+  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
 
   /**
    * Fridge constructor.
@@ -33,6 +35,7 @@ public class UserInterface {
 
     // dummy groceries.
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     Date date1 = new Date();
     Date date2 = new Date();
     Date date3 = new Date();
@@ -51,7 +54,6 @@ public class UserInterface {
     programRunning = true;
     scanner = new Scanner(System.in);
     printFridgeContent();
-
   }
 
   public void start() {
@@ -79,7 +81,7 @@ public class UserInterface {
           } else {
             break; // Break out of the while loop
           }
-        } catch (InputMismatchException e) {
+        } catch (IllegalArgumentException e) {
           printRed("Please enter a valid number.");
           scanner.next(); // Clears the scanner, so the input does not remain.
         }
@@ -124,95 +126,89 @@ public class UserInterface {
    */
   public void askForGroceryToAdd() {
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Scanner scanner = new Scanner(System.in);
-    Date expirationDate;
 
     // Takes the name of the new grocery.
-    String inpGroceryName;
-    while (true) {
-      System.out.print("Please write the name of the new Grocery: ");
-      inpGroceryName = scanner.nextLine();
-      System.out.println();
-      if (inpGroceryName.isEmpty()) {
-        printRed("The field cannot be empty.");
-      } else {
-        break; // Break out of the while loop and continue.
+    String inpGroceryName = "";
+    boolean inpGroceryNameAccepted = false;
+    while (!inpGroceryNameAccepted) {
+      try {
+        System.out.print("Please write the name of the new Grocery: ");
+        inpGroceryName = scanner.nextLine();
+        Validators.validateStringScanner(inpGroceryName);
+        inpGroceryNameAccepted = true;
+        System.out.println();
+      } catch (IllegalArgumentException e) {
+        printRed(e.getMessage());
       }
     }
 
     // Takes the amount of the new grocery.
-    double inpAmount;
-    while (true) {
+    double inpAmount = 0;
+    boolean inpAmountAccepted = false;
+    while (!inpAmountAccepted) {
       try {
-        System.out.print("Please write the amount of the new grocery(use commas for decimals): ");
-        inpAmount = scanner.nextDouble(); // uses comma"," not dot"."
-        scanner.nextLine(); // Swallows the enter typed which would otherwise be an unwanted input for the next scanner.
+        System.out.print("Please write the amount of the new grocery(use dot for decimals): ");
+        inpAmount = Validators.parseToPositiveDoubleAndValidate(scanner.nextLine()); // Uses comma"," not dot"."
+        inpAmountAccepted = true;
         System.out.println();
-        if (inpAmount <= 0) {
-          printRed("Amount must be more than 0.");
-        } else {
-          System.out.println();
-          break;
-        }
-      } catch (InputMismatchException e) {
-        printRed("\nPlease write a valid number.");
-        scanner.nextLine();
+
+      } catch (IllegalArgumentException e) {
+        printRed(e.getMessage());
       }
     }
+
     // Takes the expiration date of the new grocery.
-    String inpExpirationDate;
-    while (true) {
+    Date expirationDate = null;
+    boolean inpExpirationDateAccepted = false;
+    while (!inpExpirationDateAccepted) {
       try {
         System.out.println("Please write the expiration date of the new Grocery.");
         System.out.print("The format is as follows: yyyy-MM-dd: ");
-        inpExpirationDate = scanner.nextLine();
-        expirationDate = dateFormat.parse(inpExpirationDate);
+        expirationDate = Validators.parseStringToDateAndValidate(scanner.nextLine());
         if (expirationDate.before(new Date())) {
           printYellow("Note: the grocery has already expired.");
         }
         System.out.println();
-        break;
+        inpExpirationDateAccepted = true;
 
-      } catch (InputMismatchException e) {
-        printRed("\nPlease write a valid number.");
-        scanner.nextLine();
-      } catch (ParseException e) {
-        printRed("\nInvalid date. Please try again.");
+      } catch (IllegalArgumentException e) {
+        printRed(e.getMessage());
       }
     }
     // Takes the price per unit of the new grocery.
-    double inpPricePerUnit;
-    while (true) {
+    double inpPricePerUnit = 0;
+    boolean inpPricePerUnitAccepted = false;
+    while (!inpPricePerUnitAccepted) {
       try {
         System.out.print("Please write the price per unit of the new Grocery: ");
-        inpPricePerUnit = scanner.nextDouble();
-        scanner.nextLine(); //swallows the enter typed which would otherwise be an unwanted input for the next scanner
+        inpPricePerUnit = Validators.parseToPositiveDoubleAndValidate(scanner.nextLine());
         System.out.println();
-        if (inpPricePerUnit <= 0) {
-          printRed("Price must be more than 0.");
-        } else {
-          break;
-        }
-      } catch (InputMismatchException e) {
-        printRed("\nPlease write a valid number.");
-        scanner.nextLine();
+        inpPricePerUnitAccepted = true;
+
+      } catch (IllegalArgumentException e) {
+        printRed(e.getMessage());
       }
     }
+
     // Takes the measuring unit of the new grocery.
-    String inpMeasuringUnit;
-    while (true) {
+    String inpMeasuringUnit = "";
+    boolean inpMeasuringUnitAccepted = false;
+    while (!inpMeasuringUnitAccepted) {
       System.out.print("Please write the measuring unit of the new Grocery: ");
       inpMeasuringUnit = scanner.nextLine();
+      Validators.validateStringScanner(inpMeasuringUnit);
       System.out.println();
-      if (inpMeasuringUnit.isEmpty()) {
-        printRed("The field cannot be empty.");
-      } else {
-        break; // Break out of the while loop and continue.
-      }
+      inpMeasuringUnitAccepted = true;
     }
-    fridge.addGrocery(inpGroceryName, inpAmount, expirationDate, inpPricePerUnit, inpMeasuringUnit);
-    System.out.println(inpAmount + " " + inpMeasuringUnit + " of " + inpGroceryName + " added successfully.");
+    try {
+      fridge.addGrocery(inpGroceryName, inpAmount, expirationDate, inpPricePerUnit,
+          inpMeasuringUnit);
+      System.out.println(inpAmount + " " + inpMeasuringUnit + " of "
+          + inpGroceryName + " added successfully.");
+    } catch (IllegalArgumentException e) {
+      System.out.println(e.getMessage());
+    }
   }
 
   /**
@@ -238,13 +234,14 @@ public class UserInterface {
     System.out.print("What grocery do you want to remove?: ");
     String grocery = scanner.nextLine();
     if (fridge.groceryExists(grocery)) {
-      while (true) {
+      boolean inputAccepted = false;
+      while (!inputAccepted) {
         try {
           System.out.println("How much do you want to remove?");
-          double inpAmount = Validators.parseToPositiveFloat(scanner.nextLine());
+          double inpAmount = Validators.parseToPositiveDoubleAndValidate(scanner.nextLine());
           fridge.removeGrocery(grocery, inpAmount);
+          inputAccepted = true;
 
-          break;
         } catch (IllegalArgumentException e) {
           System.out.println();
           printRed(e.getMessage());
