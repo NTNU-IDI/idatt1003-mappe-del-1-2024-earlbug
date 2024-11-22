@@ -4,16 +4,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Validator class to used to validate if the scanner gets the right input.
- */
-public class Validators {
+public class ParamValidators {
   static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 
-  public static void checkIfFloatIsPositive(double inputFloat) {
+  public static void checkIfDoubleIsPositive(double inputFloat) {
     if (inputFloat <= 0) {
-      throw new IllegalArgumentException("Number must be more than 0.");
+      throw new IllegalArgumentException("Number must be more than 0, please try again.");
     }
   }
 
@@ -32,31 +29,34 @@ public class Validators {
     try {
       returnValue = Double.parseDouble(inpDoubleAsString);
     } catch (NumberFormatException e) {
-      throw new IllegalArgumentException("\nPlease enter a valid number.");
+      throw new IllegalArgumentException("\nThe input cannot be parsed to a float, please try again.");
     }
     if (returnValue <= 0) {
-      throw new IllegalArgumentException("\nThe number must be more than 0.");
+      throw new IllegalArgumentException("\nThe number is not positive, please try again.");
     } else {
       return returnValue;
     }
   }
 
-  public static void validateStringScanner(String inpString) {
+  public static void validateString(String inpString) {
     if (inpString.equalsIgnoreCase("")) {
-      throw new IllegalArgumentException("\nThe field cannot be empty");
+      throw new IllegalArgumentException("\nThe field is empty, please try again.");
     }
   }
 
   public static Date parseStringToDateAndValidate(String inpString) {
     Date expirationDate;
     if (inpString.equalsIgnoreCase("")) {
-      throw new IllegalArgumentException("\nThe field cannot be empty.");
+      throw new IllegalArgumentException("\nThe field is empty, please try again.");
     }
     try {
       expirationDate = dateFormat.parse(inpString);
     } catch (ParseException e) {
-      throw new IllegalArgumentException("\nPlease enter a valid date.");
+      throw new IllegalArgumentException("\nThe date is inveli, please try again..");
     }
     return expirationDate;
   }
 }
+
+
+
