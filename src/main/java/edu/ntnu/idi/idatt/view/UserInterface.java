@@ -3,6 +3,7 @@ package edu.ntnu.idi.idatt.view;
 
 import edu.ntnu.idi.idatt.controllers.Fridge;
 import edu.ntnu.idi.idatt.models.Grocery;
+import edu.ntnu.idi.idatt.utils.ParamValidators;
 import edu.ntnu.idi.idatt.utils.ScannerValidator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -99,9 +100,14 @@ public class UserInterface {
           printExpiredGroceries();
           break;
         case 5:
-          System.out.println("What grocery do you want to check?:");
-          String inpGrocery = scanner.nextLine();
-          printAmountOfGrocery(inpGrocery);
+          try {
+            System.out.println("What grocery do you want to check?:");
+            String inpGrocery = scanner.nextLine();
+            scannerValidator.validateStringScanner(inpGrocery);
+            printAmountOfGrocery(inpGrocery);
+          } catch (IllegalArgumentException e) {
+            printRed(e.getMessage());
+          }
           break;
         case 6:
           printTotalValueOfGroceriesInFridge();
@@ -120,8 +126,6 @@ public class UserInterface {
    * Every input is checked to give a robust explaination for a possible error.
    */
   public void askForGroceryToAdd() {
-
-    Scanner scanner = new Scanner(System.in);
 
     // Takes the name of the new grocery.
     String inpGroceryName = "";
@@ -229,7 +233,6 @@ public class UserInterface {
    * Asks for an input of what grocery the user wants removed.
    */
   public void askToRemoveGrocery() {
-    Scanner scanner = new Scanner(System.in);
     System.out.print("What grocery do you want to remove?: ");
     String grocery = scanner.nextLine();
     if (fridge.groceryExists(grocery)) {
@@ -262,9 +265,9 @@ public class UserInterface {
     expiredGroceries = fridge.findExpiredGroceries();
     StringBuilder returnString = new StringBuilder();
     double costOfExpiredGroceries = 0;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEEEE dd. MMMMMMMMM yyyy"); // skriver ut på norsk
-    //SimpleDateFormat dateFormat = new SimpleDateFormat("dd. MM yyyy"); //as only numbers
-    System.out.println("Today's date: " + dateFormat.format(new Date()));
+    SimpleDateFormat descriptiveDateFormat = new SimpleDateFormat("EEEEEE dd. MMMMMMMMM yyyy"); // Prints in norwegian.
+    //SimpleDateFormat descriptiveDateFormat = new SimpleDateFormat("dd. MM yyyy"); //as only numbers
+    System.out.println("Today's date: " + descriptiveDateFormat.format(new Date()));
 
     if (expiredGroceries.isEmpty()) {
       returnString.append("There are no expired groceries!");
@@ -275,7 +278,7 @@ public class UserInterface {
         returnString.append(currentGrocery.getAmountOfGrocery() + " "
             + currentGrocery.getMeasuringUnit() + " of "
             + currentGrocery.getNameOfGrocery() + " expired "
-            + dateFormat.format(currentGrocery.getExpirationDate()) + ".\n"
+            + descriptiveDateFormat.format(currentGrocery.getExpirationDate()) + ".\n"
         );
         costOfExpiredGroceries += currentGrocery.getPricePerUnit() * currentGrocery.getAmountOfGrocery();
       }
@@ -290,6 +293,11 @@ public class UserInterface {
    * @param inpGrocery The grocery which shall be counted.
    */
   public void printAmountOfGrocery(String inpGrocery) {
+    try {
+      ParamValidators.validateString(inpGrocery);
+    } catch (IllegalArgumentException e) {
+      printRed(e.getMessage());
+    }
 
     StringBuilder returnString = new StringBuilder();
     if (fridge.getAmountOfGrocery(inpGrocery) > 0) {
