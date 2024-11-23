@@ -3,12 +3,11 @@ package edu.ntnu.idi.idatt.view;
 
 import edu.ntnu.idi.idatt.controllers.Fridge;
 import edu.ntnu.idi.idatt.models.Grocery;
-import edu.ntnu.idi.idatt.utils.Validators;
+import edu.ntnu.idi.idatt.utils.ScannerValidator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -17,6 +16,7 @@ public class UserInterface {
   boolean programRunning;
   Scanner scanner;
   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+  ScannerValidator scannerValidator = new ScannerValidator();
 
 
   /**
@@ -47,45 +47,39 @@ public class UserInterface {
     } catch (ParseException e) {
       e.printStackTrace();
     }
-    fridge.addGrocery("Milk", 1.5, date1, 29.9, "liters");
-    fridge.addGrocery("Bananas", 5, date2, 5.40, "units");
-    fridge.addGrocery("eggs", 12, date3, 2.23, "Units");
-
+    try {
+      fridge.addGrocery("Milk", 1.5, date1, 29.9, "liters");
+      fridge.addGrocery("Bananas", 5, date2, 5.40, "units");
+      fridge.addGrocery("eggs", 12, date3, 2.23, "Units");
+    } catch (IllegalArgumentException e) {
+      printRed(e.getMessage());
+    }
     programRunning = true;
     scanner = new Scanner(System.in);
     printFridgeContent();
   }
 
   public void start() {
-
     while (programRunning) {
-      int numberOfChoices = 6;
-      int inpMenuChoice;
-      while (true) {
-        System.out.println("\n\nPlease choose what you want to do:\n\n"
-            + "0: Stop program\n"
-            + "1: view contents of the fridge\n"
-            + "2: Add grocery to the fridge\n"
-            + "3: Remove grocery\n"
-            + "4: View all the expired groceries and its total value\n"
-            + "5: View how much the fridge contains of a certain grocery\n"
-            + "6: Check the combined value of all the groceries in the fridge\n"
-            + "\n"
-        );
+      showMenu();
+    }
+  }
 
-        try {
-          inpMenuChoice = scanner.nextInt();
-          scanner.nextLine();
-          if (inpMenuChoice > numberOfChoices || inpMenuChoice < 0) {
-            printRed(inpMenuChoice + " is not an option.");
-          } else {
-            break; // Break out of the while loop
-          }
-        } catch (IllegalArgumentException e) {
-          printRed("Please enter a valid number.");
-          scanner.next(); // Clears the scanner, so the input does not remain.
-        }
-      }
+  public void showMenu() {
+    int inpMenuChoice;
+    System.out.println("\n\nPlease choose what you want to do:\n\n"
+        + "0: Stop program\n"
+        + "1: view contents of the fridge\n"
+        + "2: Add grocery to the fridge\n"
+        + "3: Remove grocery\n"
+        + "4: View all the expired groceries and its total value\n"
+        + "5: View how much the fridge contains of a certain grocery\n"
+        + "6: Check the combined value of all the groceries in the fridge\n"
+        + "\n"
+    );
+
+    try {
+      inpMenuChoice = scannerValidator.parseToPositiveInt(scanner.nextLine());
 
       switch (inpMenuChoice) {
         case 0:
@@ -113,11 +107,12 @@ public class UserInterface {
           printTotalValueOfGroceriesInFridge();
           break;
         default:
+          printRed(inpMenuChoice + " is not an option.");
           break;
       }
-
+    } catch (IllegalArgumentException e) {
+      printRed(e.getMessage());
     }
-
   }
 
   /**
@@ -135,7 +130,7 @@ public class UserInterface {
       try {
         System.out.print("Please write the name of the new Grocery: ");
         inpGroceryName = scanner.nextLine();
-        Validators.validateStringScanner(inpGroceryName);
+        scannerValidator.validateStringScanner(inpGroceryName);
         inpGroceryNameAccepted = true;
         System.out.println();
       } catch (IllegalArgumentException e) {
@@ -149,7 +144,7 @@ public class UserInterface {
     while (!inpAmountAccepted) {
       try {
         System.out.print("Please write the amount of the new grocery(use dot for decimals): ");
-        inpAmount = Validators.parseToPositiveDoubleAndValidate(scanner.nextLine()); // Uses comma"," not dot"."
+        inpAmount = scannerValidator.parseToPositiveDoubleAndValidate(scanner.nextLine()); // Uses comma"," not dot"."
         inpAmountAccepted = true;
         System.out.println();
 
@@ -165,7 +160,7 @@ public class UserInterface {
       try {
         System.out.println("Please write the expiration date of the new Grocery.");
         System.out.print("The format is as follows: yyyy-MM-dd: ");
-        expirationDate = Validators.parseStringToDateAndValidate(scanner.nextLine());
+        expirationDate = scannerValidator.parseStringToDateAndValidate(scanner.nextLine());
         if (expirationDate.before(new Date())) {
           printYellow("Note: the grocery has already expired.");
         }
@@ -182,7 +177,7 @@ public class UserInterface {
     while (!inpPricePerUnitAccepted) {
       try {
         System.out.print("Please write the price per unit of the new Grocery: ");
-        inpPricePerUnit = Validators.parseToPositiveDoubleAndValidate(scanner.nextLine());
+        inpPricePerUnit = scannerValidator.parseToPositiveDoubleAndValidate(scanner.nextLine());
         System.out.println();
         inpPricePerUnitAccepted = true;
 
@@ -195,12 +190,16 @@ public class UserInterface {
     String inpMeasuringUnit = "";
     boolean inpMeasuringUnitAccepted = false;
     while (!inpMeasuringUnitAccepted) {
-      System.out.print("Please write the measuring unit of the new Grocery: ");
-      inpMeasuringUnit = scanner.nextLine();
-      Validators.validateStringScanner(inpMeasuringUnit);
-      System.out.println();
-      inpMeasuringUnitAccepted = true;
+      try {
+        System.out.print("Please write the measuring unit of the new Grocery: ");
+        inpMeasuringUnit = scanner.nextLine();
+        scannerValidator.validateStringScanner(inpMeasuringUnit);
+        inpMeasuringUnitAccepted = true;
+      } catch (IllegalArgumentException e) {
+        printRed(e.getMessage());
+      }
     }
+
     try {
       fridge.addGrocery(inpGroceryName, inpAmount, expirationDate, inpPricePerUnit,
           inpMeasuringUnit);
@@ -238,7 +237,7 @@ public class UserInterface {
       while (!inputAccepted) {
         try {
           System.out.println("How much do you want to remove?");
-          double inpAmount = Validators.parseToPositiveDoubleAndValidate(scanner.nextLine());
+          double inpAmount = scannerValidator.parseToPositiveDoubleAndValidate(scanner.nextLine());
           fridge.removeGrocery(grocery, inpAmount);
           inputAccepted = true;
 

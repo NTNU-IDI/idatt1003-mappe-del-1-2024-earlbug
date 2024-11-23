@@ -4,14 +4,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Validator class to used to validate if the scanner gets the right input.
- */
-public class Validators {
-  static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+public class ScannerValidator {
+  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 
-  public static void checkIfFloatIsPositive(double inputFloat) {
+  public void checkIfFloatIsPositive(double inputFloat) {
     if (inputFloat <= 0) {
       throw new IllegalArgumentException("Number must be more than 0.");
     }
@@ -27,7 +25,7 @@ public class Validators {
    * @throws IllegalArgumentException if the string cannot be parsed to float
    * or if the number is 0 or less.
    */
-  public static double parseToPositiveDoubleAndValidate(String inpDoubleAsString) {
+  public double parseToPositiveDoubleAndValidate(String inpDoubleAsString) {
     double returnValue;
     try {
       returnValue = Double.parseDouble(inpDoubleAsString);
@@ -41,13 +39,13 @@ public class Validators {
     }
   }
 
-  public static void validateStringScanner(String inpString) {
+  public void validateStringScanner(String inpString) {
     if (inpString.equalsIgnoreCase("")) {
       throw new IllegalArgumentException("\nThe field cannot be empty");
     }
   }
 
-  public static Date parseStringToDateAndValidate(String inpString) {
+  public Date parseStringToDateAndValidate(String inpString) {
     Date expirationDate;
     if (inpString.equalsIgnoreCase("")) {
       throw new IllegalArgumentException("\nThe field cannot be empty.");
@@ -59,4 +57,21 @@ public class Validators {
     }
     return expirationDate;
   }
+
+  public int parseToPositiveInt(String inpIntString) {
+    int returnInt;
+    if (inpIntString.equalsIgnoreCase("")) {
+      throw new IllegalArgumentException("The field cannot be empty.");
+    }
+    try {
+      returnInt = Integer.parseInt(inpIntString);
+    } catch (NumberFormatException e) {
+      throw new IllegalArgumentException("Please enter a valid number");
+    }
+    if (returnInt < 0) {
+      throw new IllegalArgumentException("The number cannot be negative.");
+    }
+    return returnInt;
+  }
 }
+
