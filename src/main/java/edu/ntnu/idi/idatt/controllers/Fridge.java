@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.stream.Collectors;
+import java.text.SimpleDateFormat;
 
 
 public class Fridge {
 
   private ArrayList<Grocery> groceryList;
+  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
    * Creates an instance of Fridge.
@@ -32,16 +34,15 @@ public class Fridge {
     try {
       ParamValidators.validateString(nameOfGrocery);
       ParamValidators.checkIfDoubleIsPositive(amount);
-      ParamValidators.parseStringToDateAndValidate(expirationDate.toString());
+      ParamValidators.parseStringToDateAndValidate(simpleDateFormat.format(expirationDate));
       ParamValidators.checkIfDoubleIsPositive(pricePerUnit);
       ParamValidators.validateString(measuringUnit);
     } catch (IllegalArgumentException e) {
       throw e;
     }
 
-    Grocery newGrocery = new Grocery(
-        nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit);
-    groceryList.add(newGrocery);
+    groceryList.add(new Grocery(
+        nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit));
   }
 
   /**
@@ -52,6 +53,11 @@ public class Fridge {
    * @return Returns how much the fridge has of the grocery.
    */
   public double getAmountOfGrocery(String inpGrocery) {
+    try {
+      ParamValidators.validateString(inpGrocery);
+    } catch (IllegalArgumentException e) {
+      throw e;
+    }
     return groceryList.stream()
         .filter(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGrocery))
         // For each Grocery element in groceryList, use grocery.getAmountOgGrocery
@@ -139,6 +145,12 @@ public class Fridge {
    * @return  Boolean if the grocery is found or not.
    */
   public boolean groceryExists(String inpGroceryString) {
+    try {
+      ParamValidators.validateString(inpGroceryString);
+    } catch (IllegalArgumentException e) {
+      throw e;
+    }
+
     return groceryList.stream()
         .anyMatch(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGroceryString));
   }
