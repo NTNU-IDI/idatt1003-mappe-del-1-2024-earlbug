@@ -29,6 +29,9 @@ public class ParamValidators {
    */
   public static double parseToPositiveDoubleAndValidate(String inpDoubleAsString) {
     double returnValue;
+    if (inpDoubleAsString == null) {
+      throw new IllegalArgumentException("The argument is null. Please try again.");
+    }
     try {
       returnValue = Double.parseDouble(inpDoubleAsString);
     } catch (NumberFormatException e) {
@@ -43,6 +46,9 @@ public class ParamValidators {
   }
 
   public static void validateString(String inpString) {
+    if (inpString == null) {
+      throw new IllegalArgumentException(("The String is null. Please try again."));
+    }
     if (inpString.equalsIgnoreCase("")) {
       throw new IllegalArgumentException("\nThe field is empty, please try again.");
     }
@@ -50,6 +56,9 @@ public class ParamValidators {
 
   public static Date parseStringToDateAndValidate(String inpString) {
     Date expirationDate;
+    if (inpString == null) {
+      throw new IllegalArgumentException("The date is null. Please try again.");
+    }
     if (inpString.equalsIgnoreCase("")) {
       throw new IllegalArgumentException("\nThe field is empty, please try again.");
     }
@@ -66,5 +75,4 @@ public class ParamValidators {
       throw new IllegalArgumentException("The ArrayList is either null or empty. Please try again.");
     }
   }
-
 }
