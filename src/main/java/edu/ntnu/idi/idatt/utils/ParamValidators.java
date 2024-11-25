@@ -10,7 +10,8 @@ public class ParamValidators {
   static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 
-  public static void checkIfDoubleIsPositive(double inputFloat) {
+  public static void validatePositiveDouble(double inputFloat) {
+
     if (inputFloat <= 0) {
       throw new IllegalArgumentException("Number must be more than 0, please try again.");
     }
@@ -44,6 +45,13 @@ public class ParamValidators {
       return returnValue;
     }
   }
+
+  public static void validateDate(Date inpDate) {
+    if (inpDate == null) {
+      throw new IllegalArgumentException("The date is null. Please try again.");
+    }
+  }
+
 
   public static void validateString(String inpString) {
     if (inpString == null) {
