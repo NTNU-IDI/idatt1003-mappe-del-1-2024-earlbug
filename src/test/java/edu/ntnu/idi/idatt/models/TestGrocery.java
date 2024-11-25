@@ -1,9 +1,8 @@
-package edu.ntnu.idi.idatt;
+package edu.ntnu.idi.idatt.models;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import edu.ntnu.idi.idatt.models.Grocery;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
