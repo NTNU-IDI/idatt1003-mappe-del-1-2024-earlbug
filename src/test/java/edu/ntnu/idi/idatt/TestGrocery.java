@@ -98,6 +98,22 @@ public class TestGrocery {
     assertEquals(expectedUnit, returnedUnit);
   }
 
+  @Test
+  void removeAmountPointSixShouldEqualPointNine() {
+    // Arrange
+    double amountToBeRemoved = 0.6;
+    double expectedReturn = 0.9;
+
+    // Act
+    grocery1.removeAmount(amountToBeRemoved);
+    double actualReturn = grocery1.getAmountOfGrocery();
+
+    // Assert
+    assertEquals(expectedReturn, actualReturn);
+  }
+
+
+
 /*
   @Test
   // The closest I can get to splitting into AAA, but code don't work.
@@ -113,9 +129,24 @@ public class TestGrocery {
   }
  */
 
+  // Exception tests
   @Test
   void emptyNameShouldReturnIllegalArgumentException() {
     // Arrange
+    String emptyName = "";
+
+    // Act & assert
+    assertThrows(IllegalArgumentException.class, () ->
+        new Grocery(emptyName, 1.5, date1, 29.9, "liters"));
+  }
+
+  @Test void nullNameShouldThrowIllegalArgumentException() {
+    // Arrange
+    String nullName = null;
+
+    // Act & assert
+    assertThrows(IllegalArgumentException.class, () ->
+        new Grocery(nullName, 1.5, date1, 29.9, "liters"));
   }
 
   @Test
@@ -123,17 +154,87 @@ public class TestGrocery {
   void NegativeGroceryAmountShouldthowIllegalArgumentException() {
 
     // Arrange
-    double invalidAmount = -1.5;
+    double negativeAmount = -1.5;
 
     // Act & Assert
     assertThrows(IllegalArgumentException.class, () -> new Grocery(
-        "Milk", invalidAmount, date1, 29.9, "liters")
+        "Milk", negativeAmount, date1, 29.9, "liters")
     );
   }
 
+  @Test
+  void zeroGroceryAmountShouldThrowIllegalArgumentException() {
+    double zeroAmount = 0.0;
 
+    assertThrows(IllegalArgumentException.class, () -> new Grocery(
+        "Milk", 1.5, date1, zeroAmount, "liters")
+    );
+  }
 
+  @Test
+  void negativePricePerUnitShouldThrowIllegalArgumentException() {
+    // Arrange
+    double negativePrice = -29.9;
 
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> new Grocery(
+        "Milk", 1.5, date1, negativePrice, "liters")
+    );
+  }
 
+  @Test
+  void zeroPricePerUnitShouldThrowIllegalArgumentException() {
+    double zeroPrice = 0.0;
 
+    assertThrows(IllegalArgumentException.class, () -> new Grocery(
+        "Milk", 1.5, date1, zeroPrice, "liters")
+    );
+  }
+
+  @Test
+  void emptyMeasuringUnitShouldThrowIllegalArgumentException() {
+    // Arrange
+    String emptyUnit = "";
+
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> new Grocery(
+        "Milk", 1.5, date1, 29.9, emptyUnit)
+    );
+  }
+
+  @Test
+  void nullMeasuringUnitShouldThrowIllegalArgumentException() {
+    // Arrange
+    String nullUnit = null;
+
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> new Grocery(
+        "Milk", 1.5, date1, 29.9, nullUnit)
+    );
+  }
+
+  @Test
+  void nullExpirationDateShouldThrowIllegalArgumentException() {
+    // Arrange
+    Date nullDate = null;
+
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> new Grocery(
+        "Milk", 1.5, nullDate, 29.9, "liters")
+    );
+  }
+
+  @Test
+  void negativeRemoveAmountShouldThrowIllegalArgumentException() {
+    double negativeAmount = -15;
+
+    assertThrows(IllegalArgumentException.class, () -> grocery1.removeAmount(negativeAmount));
+  }
+
+  @Test
+  void RemoveAmountZeroShouldThrowIllegalArgumentException() {
+    double zeroAmount = 0;
+
+    assertThrows(IllegalArgumentException.class, () -> grocery1.removeAmount(zeroAmount));
+  }
 }
