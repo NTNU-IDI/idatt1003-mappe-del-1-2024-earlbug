@@ -33,9 +33,9 @@ public class Fridge {
   public void addGrocery(String nameOfGrocery, double amount, Date expirationDate, double pricePerUnit, String measuringUnit) {
     try {
       ParamValidators.validateString(nameOfGrocery);
-      ParamValidators.checkIfDoubleIsPositive(amount);
+      ParamValidators.validatePositiveDouble(amount);
       ParamValidators.parseStringToDateAndValidate(simpleDateFormat.format(expirationDate));
-      ParamValidators.checkIfDoubleIsPositive(pricePerUnit);
+      ParamValidators.validatePositiveDouble(pricePerUnit);
       ParamValidators.validateString(measuringUnit);
     } catch (IllegalArgumentException e) {
       throw e;
@@ -73,7 +73,7 @@ public class Fridge {
   public void removeGrocery(String inpGrocery, double amount) {
     try {
       ParamValidators.validateString(inpGrocery);
-      ParamValidators.checkIfDoubleIsPositive(amount);
+      ParamValidators.validatePositiveDouble(amount);
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException(e);
     }
@@ -91,7 +91,7 @@ public class Fridge {
           groceryList.remove(i);
           i -= 1; // The all indexes after the removed object will be subtracted by 1.
         } else { // Remove amount from grocery.
-          groceryList.get(i).changeAmount(-amount);
+          groceryList.get(i).removeAmount(amount);
           System.out.println("Removal was a success");
           amount = 0;
           break;
