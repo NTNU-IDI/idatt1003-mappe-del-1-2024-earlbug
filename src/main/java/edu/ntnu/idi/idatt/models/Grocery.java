@@ -1,5 +1,6 @@
 package edu.ntnu.idi.idatt.models;
 
+import edu.ntnu.idi.idatt.utils.ParamValidators;
 import java.util.Date;
 
 public class Grocery {
@@ -20,14 +21,24 @@ public class Grocery {
    * @param pricePerUnit price per measuring unit
    * @param measuringUnit measuring unit of the grocery
    */
-  public Grocery(String nameOfGrocery, double amount, Date expirationDate, double pricePerUnit, String measuringUnit) {
+  public Grocery(String nameOfGrocery, double amount,
+      Date expirationDate, double pricePerUnit, String measuringUnit) {
+    try {
+      ParamValidators.validateString(nameOfGrocery);
+      ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(amount));
+      ParamValidators.validateDate(expirationDate);
+      ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(pricePerUnit));
+      ParamValidators.validateString(measuringUnit);
+    } catch (IllegalArgumentException e) {
+      throw e;
+    }
+
     this.nameOfGrocery = nameOfGrocery;
     this.amount = amount;
     this.expirationDate = expirationDate;
     this.pricePerUnit = pricePerUnit;
     this.measuringUnit = measuringUnit;
   }
-  // todo public enum unit, gjør grocery enhet lettere?
 
   public String getNameOfGrocery() {
     return this.nameOfGrocery;
@@ -45,19 +56,13 @@ public class Grocery {
     return this.measuringUnit;
   }
 
-  public void setAmount(double setAmountTo) {
-    this.amount = setAmountTo;
-  }
-
-  public void changeAmount(double amountChanged) {
-    this.amount += amountChanged;
-  }
-
-
-
-  @Override // does this have any unwanted side effects? or can it be used for somthing else?
-  public String toString() {
-    return this.nameOfGrocery;
+  public void removeAmount(double amountChanged) {
+    try {
+      ParamValidators.validatePositiveDouble(amountChanged);
+    } catch (IllegalArgumentException e) {
+      throw e;
+    }
+    this.amount -= amountChanged;
   }
 
 }
