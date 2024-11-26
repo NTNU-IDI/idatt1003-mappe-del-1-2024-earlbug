@@ -3,8 +3,8 @@ package edu.ntnu.idi.idatt.utils;
 import edu.ntnu.idi.idatt.models.Grocery;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.xml.validation.Validator;
 
 /**
@@ -101,7 +101,7 @@ public class ParamValidators {
       validatePositiveDouble(inpGrocery.getPricePerUnit());
       validateString(inpGrocery.getMeasuringUnit());
     } catch (IllegalArgumentException e) {
-      throw e;
+      throw new IllegalArgumentException("Grocery is invalid.\n" + e.getMessage());
     }
   }
 }
