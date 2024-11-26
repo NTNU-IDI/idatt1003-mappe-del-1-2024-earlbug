@@ -77,15 +77,6 @@ public class Grocery {
     return this.measuringUnit;
   }
 
-  /**
-   * Subtracts the <code>amount</code> parameter by the <code>amountChanged</code> passed. There are
-   *    no test to check if <code>amountChanged</code> is more than <code>amount</code>, which makes
-   *    it possible for the <code>amount</code> to negative and has to be handled by Fridge.
-   *
-   * @param amountChanged a positive value which will be subtracted to from <code>amount</code>.
-   *
-   * @throws IllegalArgumentException if <code>amount</code> is 0 or less.
-   */
   public void removeAmount(double amountChanged) {
     try {
       ParamValidators.validatePositiveDouble(amountChanged);
@@ -93,6 +84,22 @@ public class Grocery {
       throw e;
     }
     this.amount -= amountChanged;
+  }
+
+  /**
+   * Adds the <code>amount</code> parameter by the <code>amountChanged</code> passed.
+   *
+   * @param amountChanged a positive value which will be added to from <code>amount</code>.
+   *
+   * @throws IllegalArgumentException if <code>amount</code> is 0 or less.
+   */
+  public void addAmount(double amountChanged) {
+    try {
+      ParamValidators.validatePositiveDouble(amountChanged);
+    } catch (IllegalArgumentException e) {
+      throw e;
+    }
+    this.amount += amountChanged;
   }
 
   /**
@@ -115,6 +122,4 @@ public class Grocery {
         && getPricePerUnit() == inpGrocery.getPricePerUnit()
         && getMeasuringUnit().equalsIgnoreCase(inpGrocery.getMeasuringUnit());
   }
-
-
 }
