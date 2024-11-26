@@ -5,11 +5,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
+import javax.xml.validation.Validator;
 
 /**
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.3.0
+ * @version 0.4.0
  */
 public class ParamValidators {
   static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -86,6 +87,21 @@ public class ParamValidators {
   public static void validateGroceryArrayList(ArrayList<Grocery> arrayList) {
     if (arrayList == null || arrayList.isEmpty()) {
       throw new IllegalArgumentException("The ArrayList is either null or empty. Please try again.");
+    }
+  }
+
+  public static void validateGrocery(Grocery inpGrocery) {
+    if (inpGrocery == null) {
+      throw new IllegalArgumentException("The grocery is null. Please try again.");
+    }
+    try {
+      validateString(inpGrocery.getNameOfGrocery());
+      validatePositiveDouble(inpGrocery.getAmountOfGrocery());
+      validateDate(inpGrocery.getExpirationDate());
+      validatePositiveDouble(inpGrocery.getPricePerUnit());
+      validateString(inpGrocery.getMeasuringUnit());
+    } catch (IllegalArgumentException e) {
+      throw e;
     }
   }
 }
