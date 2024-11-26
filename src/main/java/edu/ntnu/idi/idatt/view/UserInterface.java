@@ -21,8 +21,8 @@ public class UserInterface {
   Fridge fridge;
   boolean programRunning;
   Scanner scanner;
-  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-  ScannerValidator scannerValidator = new ScannerValidator();
+  SimpleDateFormat dateFormat;
+  ScannerValidator scannerValidator;
 
 
   /**
@@ -37,31 +37,25 @@ public class UserInterface {
    */
   public void init() {
     fridge = new Fridge();
+    dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    scannerValidator = new ScannerValidator();
+    scanner = new Scanner(System.in);
 
-
-    // dummy groceries.
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-    Date date1 = new Date();
-    Date date2 = new Date();
-    Date date3 = new Date();
-
+    // Dummy groceries.
     try {
-      date1 = dateFormat.parse("2025-10-30");
-      date2 = dateFormat.parse("2024-10-20");
-      date3 = dateFormat.parse("2023-10-10");
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    try {
+      Date date1 = dateFormat.parse("2025-10-30");
+      Date date2 = new Date(); // Today's date.
+      Date date3 = dateFormat.parse("2023-10-10");
+
       fridge.addGrocery("Milk", 1.5, date1, 29.9, "liters");
       fridge.addGrocery("Bananas", 5, date2, 5.40, "units");
       fridge.addGrocery("eggs", 12, date3, 2.23, "Units");
+    } catch (ParseException e) {
+      printRed("The initial groceries dates could not be parsed.");
     } catch (IllegalArgumentException e) {
       printRed(e.getMessage());
     }
     programRunning = true;
-    scanner = new Scanner(System.in);
     printFridgeContent();
   }
 
