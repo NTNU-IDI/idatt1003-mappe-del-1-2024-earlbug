@@ -5,8 +5,10 @@ import edu.ntnu.idi.idatt.utils.ParamValidators;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 /**
  * @since 0.1.0
@@ -28,6 +30,8 @@ public class Fridge {
 
   /**
    * Adds one or more groceries to the fridge.
+   * When trying to add a Grocery to the fridge, addGrocery checks if the grocery already exists.
+   *    If it does, then the amount of the added grocery will be added to the existing grocery.
    *
    * @param nameOfGrocery name of the grocery added.
    * @param amount specifies how much of the object is added.
@@ -36,6 +40,7 @@ public class Fridge {
    * @param measuringUnit
    */
   public void addGrocery(String nameOfGrocery, double amount, Date expirationDate, double pricePerUnit, String measuringUnit) {
+    Grocery newGrocery;
     try {
       ParamValidators.validateString(nameOfGrocery);
       ParamValidators.validatePositiveDouble(amount);
@@ -46,8 +51,19 @@ public class Fridge {
       throw e;
     }
 
-    groceryList.add(new Grocery(
-        nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit));
+    newGrocery = new Grocery(nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit);
+    boolean groceryExists = groceryList.stream()
+        .filter(grocery -> grocery.equals(newGrocery))
+        .findFirst()
+        .map(grocery -> {
+          grocery.addAmount(newGrocery.getAmountOfGrocery());
+          return true;
+        })
+        .orElse(false);
+
+    if (!groceryExists) {
+      groceryList.add(newGrocery);
+    }
   }
 
   /**
@@ -164,7 +180,6 @@ public class Fridge {
   public ArrayList<Grocery> getGroceryList() {
     return groceryList;
   }
-
 
 
 }
