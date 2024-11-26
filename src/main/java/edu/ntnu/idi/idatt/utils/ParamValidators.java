@@ -101,7 +101,7 @@ public class ParamValidators {
       validatePositiveDouble(inpGrocery.getPricePerUnit());
       validateString(inpGrocery.getMeasuringUnit());
     } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Grocery is invalid.\n" + e.getMessage());
+      throw new IllegalArgumentException("Grocery is invalid:\n" + e.getMessage());
     }
   }
 }
