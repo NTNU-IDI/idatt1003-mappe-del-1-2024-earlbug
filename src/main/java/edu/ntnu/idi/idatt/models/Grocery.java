@@ -5,8 +5,8 @@ import java.util.Date;
 
 /**
  * The class Grocery.
- * This class is the main entity which will represent a collection of food
- *    units. It is a mutable class where only the amount can be changed.
+ * This class is the main entity which will represent a collection of food units. It is a mutable
+ *    class where only the amount can be changed.
  *
  * @author Erlend Sundsdal
  * @version 0.3.0 2024-11-25
@@ -94,4 +94,27 @@ public class Grocery {
     }
     this.amount -= amountChanged;
   }
+
+  /**
+   * Checks if this <code>Grocery</code> has the same values as the parameter <code>Grocery</code>.
+   *    Primitive type values are checked with an <code>==</code> operator, while reference-type use
+   *    <code>.equals</code>. Amount is not checked.
+   *
+   * @param inpGrocery the other Grocery which this grocery shall be compared with.
+   * @return true if they are the same, false if not.
+   */
+  public boolean equals(Grocery inpGrocery) {
+    try {
+      ParamValidators.validateGrocery(inpGrocery);
+    } catch (IllegalArgumentException e) {
+      throw e;
+    }
+
+    return getNameOfGrocery().equalsIgnoreCase(inpGrocery.getNameOfGrocery())
+        && getExpirationDate().equals(inpGrocery.getExpirationDate())
+        && getPricePerUnit() == inpGrocery.getPricePerUnit()
+        && getMeasuringUnit().equalsIgnoreCase(inpGrocery.getMeasuringUnit());
+  }
+
+
 }
