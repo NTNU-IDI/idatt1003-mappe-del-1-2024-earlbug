@@ -3,6 +3,16 @@ package edu.ntnu.idi.idatt.models;
 import edu.ntnu.idi.idatt.utils.ParamValidators;
 import java.util.Date;
 
+/**
+ * The class Grocery.
+ * This class is the main entity which will represent a collection of food
+ *    units. It is a mutable class where only the amount can be changed.
+ *
+ * @author Erlend Sundsdal
+ * @version 0.3.0 2024-11-25
+ * @since 0.1.0
+ * @see edu.ntnu.idi.idatt.utils.ScannerValidator
+ */
 public class Grocery {
 
   private final String nameOfGrocery;
@@ -14,12 +24,19 @@ public class Grocery {
   /**
    * Constructor for grocery class.
    * Sets all parameters.
+   * The user cannot type the date straight into the constructor,
+   * which requires a <code>Date</code> object.
+   * The input from the user has to be parsed first, typically by <code>ScannerValidator</code>.
    *
    * @param nameOfGrocery grocery name
    * @param amount amount of the specified grocery,
-   * @param expirationDate expiration date of the grocery as ad date object
-   * @param pricePerUnit price per measuring unit
-   * @param measuringUnit measuring unit of the grocery
+   *               can be changed with <code>removeAmount(double)</code>. Amount must be positive.
+   * @param expirationDate expiration date of the grocery as a <code>Date</code> object.
+   * @param pricePerUnit price per measuring unit.
+   * @param measuringUnit measuring unit of the grocery, preferably in SI units to make the
+   *                      groceries universal to both <code>Fridge</code> and <code>Recipe</code>.
+   *
+   * @see edu.ntnu.idi.idatt.utils.ScannerValidator#parseStringToDateAndValidate(String)
    */
   public Grocery(String nameOfGrocery, double amount,
       Date expirationDate, double pricePerUnit, String measuringUnit) {
@@ -43,19 +60,32 @@ public class Grocery {
   public String getNameOfGrocery() {
     return this.nameOfGrocery;
   }
+
   public double getAmountOfGrocery() {
     return this.amount;
   }
+
   public Date getExpirationDate() {
     return this.expirationDate;
   }
+
   public double getPricePerUnit() {
     return this.pricePerUnit;
   }
+
   public String getMeasuringUnit() {
     return this.measuringUnit;
   }
 
+  /**
+   * Subtracts the <code>amount</code> parameter by the <code>amountChanged</code> passed. There are
+   *    no test to check if <code>amountChanged</code> is more than <code>amount</code>, which makes
+   *    it possible for the <code>amount</code> to negative and has to be handled by Fridge.
+   *
+   * @param amountChanged a positive value which will be subtracted to from <code>amount</code>.
+   *
+   * @throws IllegalArgumentException if <code>amount</code> is 0 or less.
+   */
   public void removeAmount(double amountChanged) {
     try {
       ParamValidators.validatePositiveDouble(amountChanged);
@@ -64,5 +94,4 @@ public class Grocery {
     }
     this.amount -= amountChanged;
   }
-
 }
