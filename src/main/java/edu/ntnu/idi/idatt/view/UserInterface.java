@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
+/**
+ * @since 0.1.0
+ * @author Erlend Sundsdal
+ * @version 0.3.0
+ */
 public class UserInterface {
 
   Fridge fridge;
@@ -148,10 +153,9 @@ public class UserInterface {
     while (!inpAmountAccepted) {
       try {
         System.out.print("Please write the amount of the new grocery(use dot for decimals): ");
-        inpAmount = scannerValidator.parseToPositiveDoubleAndValidate(scanner.nextLine()); // Uses comma"," not dot"."
+        inpAmount = scannerValidator.parseToPositiveDoubleAndValidate(scanner.nextLine());
         inpAmountAccepted = true;
         System.out.println();
-
       } catch (IllegalArgumentException e) {
         printRed(e.getMessage());
       }

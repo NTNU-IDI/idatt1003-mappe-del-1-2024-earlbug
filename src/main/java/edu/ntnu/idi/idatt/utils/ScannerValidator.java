@@ -4,6 +4,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * @since 0.1.0
+ * @author Erlend Sundsdal
+ * @version 0.3.0
+ */
+
 
 public class ScannerValidator {
   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -23,7 +29,7 @@ public class ScannerValidator {
    * @return the parsed double value.
    *
    * @throws IllegalArgumentException if the string cannot be parsed to float
-   * or if the number is 0 or less.
+   *      or if the number is 0 or less.
    */
   public double parseToPositiveDoubleAndValidate(String inpDoubleAsString) {
     double returnValue;

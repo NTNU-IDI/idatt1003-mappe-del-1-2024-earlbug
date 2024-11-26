@@ -8,6 +8,11 @@ import java.util.Date;
 import java.util.stream.Collectors;
 import java.text.SimpleDateFormat;
 
+/**
+ * @since 0.1.0
+ * @author Erlend Sundsdal
+ * @version 0.3.0
+ */
 
 public class Fridge {
 

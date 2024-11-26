@@ -9,6 +9,11 @@ import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @since 0.1.0
+ * @author Erlend Sundsdal
+ * @version 0.3.0
+ */
 public class TestGrocery {
 
   Grocery grocery1;
