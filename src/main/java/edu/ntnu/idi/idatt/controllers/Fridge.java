@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 /**
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
  * @author Erlend Sundsdal
  * @version 0.3.2
  */
-
 public class Fridge {
 
   private ArrayList<Grocery> groceryList;
@@ -99,10 +99,9 @@ public class Fridge {
   /**
    * Removes <code>amountToRemove</code> of specified grocery. The oldest groceries will be removed
    *      first. If the <code>amount</code> is less than the oldest <code>amountToRemove</code>,
-   *      then the existing <code>Grocery</code> will be removed, and the program checks if there
-   *      are more <code>Grocery</code> with the same name, and to the whole process agan until
-   *      <code>amountToRemove</code> of <code>inpString</code> has been removed, or all the
-   *      <code>inpString</code> is removed.
+   *      then the existing <code>Grocery</code> will be removed. The program checks if there
+   *      are more <code>Grocery</code> with the same name, and to the whole process again until
+   *      the specified amount has been removed, or all the <code>inpString</code> is removed.
    *
    * @param inpGrocery name of the <code>Grocery</code> which shall be removed.
    * @param amountToRemove the amount which shall be removed.
@@ -118,31 +117,20 @@ public class Fridge {
     groceryList.sort(
         Comparator.comparing(Grocery::getExpirationDate)); // Sorts array based on exp.date.
 
-    for (int i = 0; i < groceryList.size(); i++) {
-      if (groceryList.get(i).getNameOfGrocery().equalsIgnoreCase(inpGrocery)) { // If name match
-        // If there are more grocery left to remove, remove current grocery(i) object
-        // and subtract its amountToRemove from amountToRemove.
-        if (groceryList.get(i).getAmount() < amountToRemove) {
-          amountToRemove -= groceryList.get(i).getAmount();
-          groceryList.remove(i);
-          i -= 1; // All the indexes after the removed object will be subtracted by 1.
+    Iterator<Grocery> iterator = groceryList.iterator();
+    while (iterator.hasNext() && amountToRemove > 0) {
+      Grocery grocery = iterator.next();
+      if (grocery.getNameOfGrocery().equalsIgnoreCase(inpGrocery)) {
+        if (grocery.getAmount() <= amountToRemove) {
+          amountToRemove -= grocery.getAmount();
+          iterator.remove();
         } else {
-          if (groceryList.get(i).getAmount() == amountToRemove) {
-            groceryList.remove(i);
-          } else {
-            groceryList.get(i).removeAmount(amountToRemove);
-          }
-          amountToRemove = 0;
-          System.out.println("Removal was a success");
-          break;
+          amountToRemove -= grocery.getAmount();
+          grocery.removeAmount(amountToRemove);
         }
       }
     }
-    if (amountToRemove > 0) {
-      System.out.println("All the " + inpGrocery + " was removed.");
-    }
   }
-
 
   /**
    * Finds all expired groceries and returns them as <code>Grocery</code> instances in an
