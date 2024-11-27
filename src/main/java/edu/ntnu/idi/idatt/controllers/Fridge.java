@@ -2,18 +2,23 @@ package edu.ntnu.idi.idatt.controllers;
 
 import edu.ntnu.idi.idatt.models.Grocery;
 import edu.ntnu.idi.idatt.utils.ParamValidators;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.stream.Collectors;
-import java.text.SimpleDateFormat;
 
 /**
- * The fridge class stores Grocery instances in an ArrayList stored as a class variable.
+ * The class <code>Fridge</code> class represents a storage for food, in the sense that it stores
+ *    <code>Grocery</code> instances in an <code>ArrayList</code> stored as a class variable.
+ *    <code>Fridge</code> has methods which execute changes to the <code>groceryList</code>, and
+ *    methods that returns information of the current state of the <code>Grocery</code>
+ *    objects, like the combined value of the content of the <code>Fridge</code>. These ar only
+ *    values, and has to be processed/formulated further to be readable for a user.
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.3.0
+ * @version 0.3.2
  */
 
 public class Fridge {
@@ -22,7 +27,7 @@ public class Fridge {
   SimpleDateFormat simpleDateFormat;
 
   /**
-   * Creates an instance of Fridge.
+   * Creates an instance of Fridge. The groceryList is initialized, and the date format is set.
    */
   public Fridge() {
     groceryList = new ArrayList<>();
@@ -70,11 +75,13 @@ public class Fridge {
   }
 
   /**
-   * Returns how much of the specified grocery is currently in the fridge, as a double.
+   * Returns how much of the specified grocery is currently in the fridge, as a double. If there are
+   *    no such <code>Grocery</code>, then 0.0 will be returned.
    *
    * @param inpGrocery The grocery you want to find the amount of.
    *
-   * @return Returns how much the fridge has of the grocery.
+   * @return Returns how much the fridge has of the grocery. Return 0.0 if there are no such
+   *      <code>Grocery</code>.
    */
   public double getAmountOfGrocery(String inpGrocery) {
     try {
@@ -90,14 +97,20 @@ public class Fridge {
   }
 
   /**
-   * Removes specified grocery.
+   * Removes <code>amountToRemove</code> of specified grocery. The oldest groceries will be removed
+   *      first. If the <code>amount</code> is less than the oldest <code>amountToRemove</code>,
+   *      then the existing <code>Grocery</code> will be removed, and the program checks if there
+   *      are more <code>Grocery</code> with the same name, and to the whole process agan until
+   *      <code>amountToRemove</code> of <code>inpString</code> has been removed, or all the
+   *      <code>inpString</code> is removed.
    *
-   * @param inpGrocery Grocery which shall be removed.
+   * @param inpGrocery name of the <code>Grocery</code> which shall be removed.
+   * @param amountToRemove the amount which shall be removed.
    */
-  public void removeGrocery(String inpGrocery, double amount) {
+  public void removeGrocery(String inpGrocery, double amountToRemove) {
     try {
       ParamValidators.validateString(inpGrocery);
-      ParamValidators.validatePositiveDouble(amount);
+      ParamValidators.validatePositiveDouble(amountToRemove);
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException(e);
     }
@@ -108,44 +121,35 @@ public class Fridge {
     for (int i = 0; i < groceryList.size(); i++) {
       if (groceryList.get(i).getNameOfGrocery().equalsIgnoreCase(inpGrocery)) { // If name match
         // If there are more grocery left to remove, remove current grocery(i) object
-        // and subtract its amount from amount.
-        if (groceryList.get(i).getAmount() < amount) {
-          amount -= groceryList.get(i).getAmount();
+        // and subtract its amountToRemove from amountToRemove.
+        if (groceryList.get(i).getAmount() < amountToRemove) {
+          amountToRemove -= groceryList.get(i).getAmount();
           groceryList.remove(i);
           i -= 1; // All the indexes after the removed object will be subtracted by 1.
         } else {
-          if (groceryList.get(i).getAmount() == amount) {
+          if (groceryList.get(i).getAmount() == amountToRemove) {
             groceryList.remove(i);
-            i -= 1;
-            amount = 0;
           } else {
-            groceryList.get(i).removeAmount(amount);
-            amount = 0;
+            groceryList.get(i).removeAmount(amountToRemove);
           }
+          amountToRemove = 0;
           System.out.println("Removal was a success");
           break;
         }
       }
     }
-    if (amount > 0) {
+    if (amountToRemove > 0) {
       System.out.println("All the " + inpGrocery + " was removed.");
     }
   }
-  /*
-  private static void removeGroceryValidator(String inpGrocery, double amount) {
-    if (amount < 0 || amount == string) {
-      throw new IllegalArgumentException("Amount must be positive double value.");
-    }
-    if (inpGrocery) {
 
-    }
-  }
-*/
 
   /**
-   * Finds all expired groceries.
+   * Finds all expired groceries and returns them as <code>Grocery</code> instances in an
+   *    <code>ArrayList</code>.
    *
-   * @return ArrayList of expired grocery objects.
+   * @return ArrayList of expired grocery objects. An empty Arraylist is returned of nothing is
+   *      found.
    */
   public ArrayList<Grocery> findExpiredGroceries() {
     return groceryList.stream()
@@ -156,9 +160,11 @@ public class Fridge {
   }
 
   /**
-   * finds the combined value of all the items in the fridge.
+   * Finds the combined value of all the items in the <code>Fridge</code> by adding the products of
+   *    <code>amount</code> and <code>pricePerUnit</code> of all the <code>Grocery</code> objects
+   *    together.
    *
-   * @return value of items in fridge.
+   * @return the combined value of all items in fridge.
    */
   public double getValueOfGroceriesInFridge() {
     return groceryList.stream()
@@ -166,7 +172,11 @@ public class Fridge {
         .sum();
   }
 
-
+  /**
+   * Makes a copy of <code>groceryList</code> and sorts the contents in alphabetical order.
+   *
+   * @return an ArrayList of Groceries sorted alphabetically.
+   */
   public ArrayList<Grocery> retrunAlfabeticaclArrayList() {
     return groceryList.stream()
         .sorted(Comparator.comparing(Grocery::getAmount))
@@ -176,9 +186,9 @@ public class Fridge {
   /**
    * Finds out if a grocery exists in the fridge.
    *
-   * @param inpGroceryString Checks in the name matches any name present in the fridge.
-   *
-   * @return  Boolean if the grocery is found or not.
+   * @param inpGroceryString the name which shall be used to search for <code>Grocery</code>
+   *                         instances.
+   * @return true if the grocery is found, false if not.
    */
   public boolean groceryExists(String inpGroceryString) {
     try {
@@ -191,7 +201,7 @@ public class Fridge {
         .anyMatch(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGroceryString));
   }
 
-  // getter grocerylist
+  // getter groceryList
   public ArrayList<Grocery> getGroceryList() {
     return groceryList;
   }
