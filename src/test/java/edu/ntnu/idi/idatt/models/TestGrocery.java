@@ -77,12 +77,12 @@ public class TestGrocery {
 
 
   @Test
-  void getAmountOfGroceryShouldReturn1Point5() {
+  void getAmountShouldReturn1Point5() {
     // Arrange
     double expectedAmount = 1.5;
 
     // Act
-    double returnedAmount = grocery1.getAmountOfGrocery();
+    double returnedAmount = grocery1.getAmount();
 
     // Assert
     assertEquals(expectedAmount, returnedAmount);
@@ -204,7 +204,7 @@ public class TestGrocery {
 
     // Act
     grocery1.removeAmount(amountToBeRemoved);
-    double actualReturn = grocery1.getAmountOfGrocery();
+    double actualReturn = grocery1.getAmount();
 
     // Assert
     assertEquals(expectedReturn, actualReturn);
@@ -234,7 +234,7 @@ public class TestGrocery {
 
     // Act
     grocery1.addAmount(amountToAdd);
-    double actualAmount = grocery1.getAmountOfGrocery();
+    double actualAmount = grocery1.getAmount();
 
     // Assert
     assertEquals(expectedAmount, actualAmount);
@@ -253,10 +253,13 @@ public class TestGrocery {
   void addZeroAmountShouldThrowIllegalArgumentException() {
     // Arrange
     double zeroAmount = 0.0;
-
     // Act & Assert
     assertThrows(IllegalArgumentException.class, () -> grocery1.addAmount(zeroAmount));
   }
+
+
+
+
 
 
 
