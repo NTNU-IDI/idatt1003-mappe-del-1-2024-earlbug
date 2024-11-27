@@ -17,9 +17,10 @@ import org.junit.jupiter.api.Test;
 /**
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.3.0
+ * @version 0.3.1
  */
 public class TestFridge {
+
   SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   @BeforeEach
@@ -69,7 +70,7 @@ public class TestFridge {
     fridge.addGrocery(name, amount2, expirationDate, pricePerUnit, measuringUnit);
 
     //Assert
-    assertEquals(newAmount,fridge.getGroceryList().get(0).getAmount());
+    assertEquals(newAmount, fridge.getGroceryList().get(0).getAmount());
     assertEquals(sizeOfArrayList, fridge.getGroceryList().size());
   }
 
@@ -138,7 +139,6 @@ public class TestFridge {
   }
 
 
-
   @Test
   void getAmountOfGroceryShouldSumAllGroceryAmountWithInputedName() {
     // Arrange
@@ -202,7 +202,6 @@ public class TestFridge {
   }
 
 
-
   @Test
   void removeGroceryShouldReduceOldestGroceryAmountByParameter() throws ParseException {
     // Arrange
@@ -222,28 +221,141 @@ public class TestFridge {
   }
 
   @Test
-void removeGroceryShouldRemoveGroceryIfAmountIsEqualToGroceryAmount() throws ParseException {
-  // Arrange
-  String name = "Milk";
-  double initialAmount = 5.0;
-  double amountToRemove = 5.0;
-  Date expirationDate = simpleDateFormat.parse("2023-12-31");
-  Fridge fridge = new Fridge();
-  fridge.addGrocery(name, initialAmount, expirationDate, 20.5, "liter");
+  void removeGroceryShouldRemoveGroceryIfAmountIsEqualToGroceryAmount() throws ParseException {
+    // Arrange
+    String name = "Milk";
+    double initialAmount = 5.0;
+    double amountToRemove = 5.0;
+    Date expirationDate = simpleDateFormat.parse("2023-12-31");
+    Fridge fridge = new Fridge();
+    fridge.addGrocery(name, initialAmount, expirationDate, 20.5, "liter");
 
-  // Act
-  fridge.removeGrocery(name, amountToRemove);
+    // Act
+    fridge.removeGrocery(name, amountToRemove);
 
-  // Assert
-  assertTrue(fridge.getGroceryList().isEmpty());
-}
+    // Assert
+    assertTrue(fridge.getGroceryList().isEmpty());
 
-
-
+  }
 
 
 
+  @Test
+  void findExpiredGroceriesShouldReturnExpiredGroceries () throws ParseException {
+    // Arrange
+    String name1 = "Milk";
+    String name2 = "Eggs";
+    Date expiredDate = simpleDateFormat.parse("0000-00-00");
+    Date validDate = simpleDateFormat.parse("3000-12-30");
+    Fridge fridge = new Fridge();
+    fridge.addGrocery(name1, 1.0, expiredDate, 20.5, "liter");
+    fridge.addGrocery(name2, 1.0, validDate, 10.0, "dozen");
 
+    // Act
+    ArrayList<Grocery> expiredGroceries = fridge.findExpiredGroceries();
+
+    // Assert
+    assertEquals(1, expiredGroceries.size());
+    assertEquals(name1, expiredGroceries.get(0).getNameOfGrocery());
+  }
+
+  @Test
+  void findExpiredGroceriesShouldReturnEmptyListIfNoGroceriesAreExpired () throws ParseException {
+    // Arrange
+    String name1 = "Milk";
+    String name2 = "Eggs";
+    Date validDate1 = simpleDateFormat.parse("3000-12-30");
+    Date validDate2 = simpleDateFormat.parse("2200-00-00");
+    Fridge fridge = new Fridge();
+    fridge.addGrocery(name1, 1.0, validDate1, 20.5, "liter");
+    fridge.addGrocery(name2, 1.0, validDate2, 10.0, "dozen");
+    System.out.println(new Date().toString());
+
+    // Act
+    ArrayList<Grocery> expiredGroceries = fridge.findExpiredGroceries();
+
+    // Assert
+    assertTrue(expiredGroceries.isEmpty());
+  }
+
+  @Test
+  void getValueOfGroceriesInFridgeShouldReturnCorrectValue() {
+    // Arrange
+
+    Fridge fridge = new Fridge();
+    double amount1 = 1.5;
+    double price1 = 29.9;
+    double amount2 = 5;
+    double price2 = 5.40;
+    double amount3 = 0.4;
+    double price3 = 14.32;
+
+    fridge.addGrocery("Milk", amount1, new Date(), price1, "liters");
+    fridge.addGrocery("Bananas", amount2, new Date(), price2, "units");
+    fridge.addGrocery("Flour", amount3, new Date(), price3, "kg");
+
+    double expectedValue = (amount1 * price1) + (amount2 * price2) + (amount3 * price3);
+    // Act
+    double actualValue = fridge.getValueOfGroceriesInFridge();
+
+    // Assert
+    assertEquals(expectedValue, actualValue);
+  }
+
+
+
+  @Test
+  void groceryExistsShouldReturnTrueIfGroceryExists() throws ParseException {
+    // Arrange
+    String name = "Milk";
+    Date expirationDate = simpleDateFormat.parse("2023-12-31");
+    Fridge fridge = new Fridge();
+    fridge.addGrocery(name, 1.0, expirationDate, 20.5, "liter");
+
+    // Act
+    boolean exists = fridge.groceryExists(name);
+
+    // Assert
+    assertTrue(exists);
+  }
+
+  @Test
+  void groceryExistsShouldReturnFalseIfGroceryDoesNotExist() throws ParseException {
+    // Arrange
+    String name = "Milk";
+    String nonExistentName = "Eggs";
+    Date expirationDate = simpleDateFormat.parse("2023-12-31");
+    Fridge fridge = new Fridge();
+    fridge.addGrocery(name, 1.0, expirationDate, 20.5, "liter");
+
+    // Act
+    boolean exists = fridge.groceryExists(nonExistentName);
+
+    // Assert
+    assertFalse(exists);
+  }
+
+
+
+  @Test
+  void getGroceryListShouldReturnAllGroceries() throws ParseException {
+    // Arrange
+    String name1 = "Milk";
+    String name2 = "Eggs";
+    Date expirationDate1 = simpleDateFormat.parse("2023-12-31");
+    Date expirationDate2 = simpleDateFormat.parse("2023-11-30");
+    Fridge fridge = new Fridge();
+    fridge.addGrocery(name1, 1.0, expirationDate1, 20.5, "liter");
+    fridge.addGrocery(name2, 2.0, expirationDate2, 10.0, "dozen");
+
+    // Act
+    ArrayList<Grocery> groceryList = fridge.getGroceryList();
+
+    // Assert
+    assertEquals(2, groceryList.size());
+    assertEquals(name1, groceryList.get(0).getNameOfGrocery());
+    assertEquals(name2, groceryList.get(1).getNameOfGrocery());
+  }
 
 
 
@@ -256,42 +368,33 @@ void removeGroceryShouldRemoveGroceryIfAmountIsEqualToGroceryAmount() throws Par
 
 
   @Test
-  void k() {
+  void k () {
     // Arrange
-
 
     // Act
 
-
     //Assert
-
 
   }
   @Test
-  void n() {
+  void n () {
     // Arrange
-
 
     // Act
 
-
     //Assert
-
 
   }
   @Test
-  void o() {
+  void o () {
     // Arrange
-
 
     // Act
 
-
     //Assert
-
 
   }
 
 
-}
+  }
 
