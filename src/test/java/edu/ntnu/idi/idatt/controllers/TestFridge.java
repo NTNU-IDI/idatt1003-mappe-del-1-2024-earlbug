@@ -153,17 +153,82 @@ public class TestFridge {
 
 
   @Test
-  void m() {
+  void getAmountOfGroceryShouldSumAllGroceryAmountWithInputedName() {
     // Arrange
+    String name1 = "Milk";
+    String name2 = "egg";
+    String name3 = "Milk";
+    double amount1 = 3.8;
+    double amount2 = 1;
+    double amount3 = 1.4;
+    Date expirationDate = new Date();
+    double pricePerUnit = 20.5;
+    String measuringUnit = "liter";
+    Fridge fridge = new Fridge();
 
+    double expectedAmount = amount1 + amount3;
+    fridge.addGrocery(name1, amount1, expirationDate, pricePerUnit, measuringUnit);
+    fridge.addGrocery(name2, amount2, expirationDate, pricePerUnit, measuringUnit);
+    fridge.addGrocery(name3, amount3, expirationDate, pricePerUnit, measuringUnit);
 
     // Act
-
+    double returnedAmount = fridge.getAmountOfGrocery(name1);
 
     //Assert
-
-
+    assertEquals(expectedAmount, returnedAmount);
   }
+
+  @Test
+  void getAmountOfGroceryShouldReturnZeroIfNoGroceriesMatchName() {
+    // Arrange
+    String name1 = "Milk";
+    String name2 = "egg";
+    String name3 = "Milk";
+    double amount1 = 3.8;
+    double amount2 = 1;
+    double amount3 = 1.4;
+    Date expirationDate = new Date();
+    double pricePerUnit = 20.5;
+    String measuringUnit = "liter";
+    Fridge fridge = new Fridge();
+
+    double expectedAmount = 0;
+    fridge.addGrocery(name1, amount1, expirationDate, pricePerUnit, measuringUnit);
+    fridge.addGrocery(name2, amount2, expirationDate, pricePerUnit, measuringUnit);
+    fridge.addGrocery(name3, amount3, expirationDate, pricePerUnit, measuringUnit);
+
+    // Act
+    double returnedAmount = fridge.getAmountOfGrocery("carrot");
+
+    //Assert
+    assertEquals(expectedAmount, returnedAmount);
+  }
+
+  @Test
+  void getAmountOfGroceryShouldThrowIllegalArgumentExceptionIfNameIsInvalid() {
+    // Arrange
+    Fridge fridge = new Fridge();
+    String invalidName = "";
+
+    // Act & assert
+    assertThrows(IllegalArgumentException.class, () -> fridge.getAmountOfGrocery(invalidName));
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   @Test
   void k() {
     // Arrange
