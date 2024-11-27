@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import java.text.SimpleDateFormat;
 
 /**
+ * The fridge class stores Grocery instances in an ArrayList stored as a class variable.
+ *
  * @since 0.1.0
  * @author Erlend Sundsdal
  * @version 0.3.0
@@ -103,7 +105,6 @@ public class Fridge {
     groceryList.sort(
         Comparator.comparing(Grocery::getExpirationDate)); // Sorts array based on exp.date.
 
-
     for (int i = 0; i < groceryList.size(); i++) {
       if (groceryList.get(i).getNameOfGrocery().equalsIgnoreCase(inpGrocery)) { // If name match
         // If there are more grocery left to remove, remove current grocery(i) object
@@ -165,6 +166,13 @@ public class Fridge {
         .sum();
   }
 
+
+  public ArrayList<Grocery> retrunAlfabeticaclArrayList() {
+    return groceryList.stream()
+        .sorted(Comparator.comparing(Grocery::getAmount))
+        .collect(Collectors.toCollection(ArrayList::new));
+  }
+
   /**
    * Finds out if a grocery exists in the fridge.
    *
@@ -186,6 +194,10 @@ public class Fridge {
   // getter grocerylist
   public ArrayList<Grocery> getGroceryList() {
     return groceryList;
+  }
+
+  private void setGroceryList(ArrayList<Grocery> newGroceryList) {
+    this.groceryList = newGroceryList;
   }
 
 
