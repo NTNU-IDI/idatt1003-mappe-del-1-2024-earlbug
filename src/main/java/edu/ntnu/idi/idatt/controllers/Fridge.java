@@ -5,10 +5,8 @@ import edu.ntnu.idi.idatt.utils.ParamValidators;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.text.SimpleDateFormat;
-import java.util.Objects;
 
 /**
  * @since 0.1.0
@@ -19,13 +17,15 @@ import java.util.Objects;
 public class Fridge {
 
   private ArrayList<Grocery> groceryList;
-  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+  SimpleDateFormat simpleDateFormat;
 
   /**
    * Creates an instance of Fridge.
    */
   public Fridge() {
     groceryList = new ArrayList<>();
+    simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
   }
 
   /**
@@ -35,11 +35,12 @@ public class Fridge {
    *
    * @param nameOfGrocery name of the grocery added.
    * @param amount specifies how much of the object is added.
-   * @param expirationDate specifies at what date the grocery expires as a Date object
-   * @param pricePerUnit
-   * @param measuringUnit
+   * @param expirationDate specifies at what date the grocery expires. As a Date object.
+   * @param pricePerUnit the price of each unit of the grocery.
+   * @param measuringUnit the unit the grocery is measured in. Preferably SI units.
    */
-  public void addGrocery(String nameOfGrocery, double amount, Date expirationDate, double pricePerUnit, String measuringUnit) {
+  public void addGrocery(String nameOfGrocery, double amount, Date expirationDate,
+      double pricePerUnit, String measuringUnit) {
     Grocery newGrocery;
     try {
       ParamValidators.validateString(nameOfGrocery);
@@ -50,13 +51,13 @@ public class Fridge {
     } catch (IllegalArgumentException e) {
       throw e;
     }
-
+    // If the new grocery exists, increase existing grocery amount.
     newGrocery = new Grocery(nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit);
     boolean groceryExists = groceryList.stream()
         .filter(grocery -> grocery.equals(newGrocery))
         .findFirst()
         .map(grocery -> {
-          grocery.addAmount(newGrocery.getAmountOfGrocery());
+          grocery.addAmount(newGrocery.getAmount());
           return true;
         })
         .orElse(false);
@@ -82,7 +83,7 @@ public class Fridge {
     return groceryList.stream()
         .filter(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGrocery))
         // For each Grocery element in groceryList, use grocery.getAmountOgGrocery
-        .mapToDouble(Grocery::getAmountOfGrocery)
+        .mapToDouble(Grocery::getAmount)
         .sum();
   }
 
@@ -107,14 +108,20 @@ public class Fridge {
       if (groceryList.get(i).getNameOfGrocery().equalsIgnoreCase(inpGrocery)) { // If name match
         // If there are more grocery left to remove, remove current grocery(i) object
         // and subtract its amount from amount.
-        if (groceryList.get(i).getAmountOfGrocery() < amount) {
-          amount -= groceryList.get(i).getAmountOfGrocery();
+        if (groceryList.get(i).getAmount() < amount) {
+          amount -= groceryList.get(i).getAmount();
           groceryList.remove(i);
-          i -= 1; // The all indexes after the removed object will be subtracted by 1.
-        } else { // Remove amount from grocery.
-          groceryList.get(i).removeAmount(amount);
+          i -= 1; // All the indexes after the removed object will be subtracted by 1.
+        } else {
+          if (groceryList.get(i).getAmount() == amount) {
+            groceryList.remove(i);
+            i -= 1;
+            amount = 0;
+          } else {
+            groceryList.get(i).removeAmount(amount);
+            amount = 0;
+          }
           System.out.println("Removal was a success");
-          amount = 0;
           break;
         }
       }
@@ -154,7 +161,7 @@ public class Fridge {
    */
   public double getValueOfGroceriesInFridge() {
     return groceryList.stream()
-        .mapToDouble(grocery -> grocery.getAmountOfGrocery() * grocery.getPricePerUnit())
+        .mapToDouble(grocery -> grocery.getAmount() * grocery.getPricePerUnit())
         .sum();
   }
 
