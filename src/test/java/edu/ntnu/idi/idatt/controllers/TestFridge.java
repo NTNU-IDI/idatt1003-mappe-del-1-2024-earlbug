@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 import edu.ntnu.idi.idatt.models.Grocery;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.Test;
  * @version 0.3.0
  */
 public class TestFridge {
+  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   @BeforeEach
   void setup() {
@@ -66,7 +69,7 @@ public class TestFridge {
     fridge.addGrocery(name, amount2, expirationDate, pricePerUnit, measuringUnit);
 
     //Assert
-    assertEquals(newAmount,fridge.getGroceryList().get(0).getAmountOfGrocery());
+    assertEquals(newAmount,fridge.getGroceryList().get(0).getAmount());
     assertEquals(sizeOfArrayList, fridge.getGroceryList().size());
   }
 
@@ -92,22 +95,6 @@ public class TestFridge {
     String name = "Milk";
     double amount = -1.75;
     Date expirationDate = new Date();
-    double pricePerUnit = 20.5;
-    String measuringUnit = "liter";
-    Fridge fridge = new Fridge();
-
-    // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> {
-      fridge.addGrocery(name, amount, expirationDate, pricePerUnit, measuringUnit);
-    });
-  }
-
-  @Test
-  void addGroceryShouldThrowExceptionForInvalidExpirationDate() {
-    // Arrange
-    String name = "Milk";
-    double amount = 1.75;
-    Date expirationDate = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000); // Yesterday
     double pricePerUnit = 20.5;
     String measuringUnit = "liter";
     Fridge fridge = new Fridge();
@@ -213,6 +200,45 @@ public class TestFridge {
     // Act & assert
     assertThrows(IllegalArgumentException.class, () -> fridge.getAmountOfGrocery(invalidName));
   }
+
+
+
+  @Test
+  void removeGroceryShouldReduceOldestGroceryAmountByParameter() throws ParseException {
+    // Arrange
+    String name = "Milk";
+    double initialAmount = 5.0;
+    double amountToRemove = 2.0;
+    double remainingAmount = initialAmount - amountToRemove;
+    Date expirationDate = simpleDateFormat.parse("2023-12-31");
+    Fridge fridge = new Fridge();
+    fridge.addGrocery(name, initialAmount, expirationDate, 20.5, "liter");
+
+    // Act
+    fridge.removeGrocery(name, amountToRemove);
+
+    // Assert
+    assertEquals(remainingAmount, fridge.getGroceryList().get(0).getAmount());
+  }
+
+  @Test
+void removeGroceryShouldRemoveGroceryIfAmountIsEqualToGroceryAmount() throws ParseException {
+  // Arrange
+  String name = "Milk";
+  double initialAmount = 5.0;
+  double amountToRemove = 5.0;
+  Date expirationDate = simpleDateFormat.parse("2023-12-31");
+  Fridge fridge = new Fridge();
+  fridge.addGrocery(name, initialAmount, expirationDate, 20.5, "liter");
+
+  // Act
+  fridge.removeGrocery(name, amountToRemove);
+
+  // Assert
+  assertTrue(fridge.getGroceryList().isEmpty());
+}
+
+
 
 
 
