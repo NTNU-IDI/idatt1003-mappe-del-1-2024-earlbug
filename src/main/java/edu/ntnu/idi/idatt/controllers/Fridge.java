@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The class <code>Fridge</code> class represents a storage for food, in the sense that it stores
@@ -19,12 +21,13 @@ import java.util.stream.Collectors;
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.4.0
+ * @version 0.5.0
  */
 public class Fridge {
 
   private ArrayList<Grocery> groceryList;
   SimpleDateFormat simpleDateFormat;
+  Map<String, String> mapGroceryNameAndMeasuringUnit;
 
   /**
    * Creates an instance of Fridge. The groceryList is initialized, and the date format is set.
@@ -108,13 +111,9 @@ public class Fridge {
    * @param inpGrocery name of the <code>Grocery</code> which shall be removed.
    * @param amountToRemove the amount which shall be removed.
    */
-  public void removeGrocery(String inpGrocery, double amountToRemove) {
-    try {
-      ParamValidators.validateString(inpGrocery);
-      ParamValidators.validatePositiveDouble(amountToRemove);
-    } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException(e);
-    }
+  public void removeGrocery(String inpGrocery, double amountToRemove) throws IllegalArgumentException {
+    ParamValidators.validateString(inpGrocery);
+    ParamValidators.validatePositiveDouble(amountToRemove);
 
     groceryList.sort(
         Comparator.comparing(Grocery::getExpirationDate)); // Sorts array based on exp.date.
@@ -127,8 +126,9 @@ public class Fridge {
           amountToRemove -= grocery.getAmount();
           iterator.remove();
         } else {
-          amountToRemove -= grocery.getAmount();
+          double groceryAmount = grocery.getAmount();
           grocery.removeAmount(amountToRemove);
+          amountToRemove -= groceryAmount;
         }
       }
     }
@@ -189,6 +189,21 @@ public class Fridge {
 
     return groceryList.stream()
         .anyMatch(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGroceryString));
+  }
+
+  /**
+   * Gets the measuring unit for the corresponding Grocery name if it exists. If not, then an
+   *    <code>IllegalArgumentException</code> will be thrown.
+   *
+   * @param inpName name of the <code>Grocery</code> to find the <code>measuringUnit</code> to.
+   * @return measuring unit of specified <code>Grocery</code>.
+   */
+  public String getMeasuringUnitByName(String inpName) {
+    return groceryList.stream()
+        .filter(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpName))
+        .findFirst()
+        .map(Grocery::getMeasuringUnit)
+        .orElseThrow(() -> new IllegalArgumentException("No Groceries with this name."));
   }
 
   // getter groceryList
