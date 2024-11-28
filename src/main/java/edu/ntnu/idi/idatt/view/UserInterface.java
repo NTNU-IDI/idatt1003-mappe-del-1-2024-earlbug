@@ -12,9 +12,14 @@ import java.util.Date;
 import java.util.Scanner;
 
 /**
+ * User Interface is what ensures communication between the user and the program. Its main task is
+ *    to get information from <code>Fridge</code> and process it to be understandable for the user,
+ *    and to take user input and make it readable for the program.
+ *    A UserInterface instance is initiated when the user starts the program.
+ *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.3.0
+ * @version 0.5.0
  */
 public class UserInterface {
 
@@ -28,7 +33,7 @@ public class UserInterface {
   /**
    * Fridge constructor.
    */
-  public void UserInterface() {
+  public UserInterface() {
 
   }
 
@@ -59,12 +64,18 @@ public class UserInterface {
     printFridgeContent();
   }
 
+  /**
+   * Shows menu repeatedly until the user exits the program.
+   */
   public void start() {
     while (programRunning) {
       showMenu();
     }
   }
 
+  /**
+   * Displays a menu with options the user can choose to do, and calls for the chosen method.
+   */
   public void showMenu() {
     int inpMenuChoice;
     System.out.println("\n\nPlease choose what you want to do:\n\n"
@@ -99,14 +110,7 @@ public class UserInterface {
           printExpiredGroceries();
           break;
         case 5:
-          try {
-            System.out.println("What grocery do you want to check?:");
-            String inpGrocery = scanner.nextLine();
-            scannerValidator.validateStringScanner(inpGrocery);
-            printAmountOfGrocery(inpGrocery);
-          } catch (IllegalArgumentException e) {
-            printRed(e.getMessage());
-          }
+          askForWhatGroceryToCheck();
           break;
         case 6:
           printTotalValueOfGroceriesInFridge();
@@ -120,9 +124,25 @@ public class UserInterface {
     }
   }
 
+  private void askForWhatGroceryToCheck() {
+    boolean validInput = false;
+    while (!validInput) {
+      try {
+        System.out.println("What grocery do you want to check?:");
+        String inpGrocery = scanner.nextLine();
+        scannerValidator.validateStringScanner(inpGrocery);
+        validInput = true;
+        printAmountOfGrocery(inpGrocery);
+      } catch (IllegalArgumentException e) {
+        printRed(e.getMessage());
+      }
+    }
+  }
+
   /**
-   * Asks the user for all the details of the grocery it wants to add.
-   * Every input is checked to give a robust explaination for a possible error.
+   * Asks the user for all the details of the grocery it wants to add. If the input is invalid, then
+   *    the user get asked again until the input is valid. When all details are filled, the grocery
+   *    is added to the fridge.
    */
   public void askForGroceryToAdd() {
 
@@ -156,6 +176,7 @@ public class UserInterface {
     }
 
     // Takes the expiration date of the new grocery.
+    // Expired groceries are allowed, but the user will get notified.
     Date expirationDate = null;
     boolean inpExpirationDateAccepted = false;
     while (!inpExpirationDateAccepted) {
@@ -173,6 +194,7 @@ public class UserInterface {
         printRed(e.getMessage());
       }
     }
+
     // Takes the price per unit of the new grocery.
     double inpPricePerUnit = 0;
     boolean inpPricePerUnitAccepted = false;
@@ -202,6 +224,7 @@ public class UserInterface {
       }
     }
 
+    // Tries to add grocery to Fridge.
     try {
       fridge.addGrocery(inpGroceryName, inpAmount, expirationDate, inpPricePerUnit,
           inpMeasuringUnit);
@@ -216,30 +239,41 @@ public class UserInterface {
    * Prints out all items in the fridge, with all it's attributes.
    */
   public void printFridgeContent() {
-    StringBuilder outpString = new StringBuilder("The fridge currently contains:" + "\n");
-    for (int i = 0; i < fridge.getGroceryList().size(); i++) {
-      Grocery groceryi = fridge.getGroceryList().get(i);
-      outpString.append(
-          groceryi.getAmountOfGrocery() + " " + groceryi.getMeasuringUnit()
-              + " of " + groceryi.getNameOfGrocery() + "\n"
+    System.out.println("The fridge currently contains:");
+    for (Grocery grocery : fridge.getGroceryList()) {
+      System.out.println(grocery.getAmount() + " " + grocery.getMeasuringUnit() + " of "
+          + grocery.getNameOfGrocery()
       );
     }
-    System.out.println(outpString);
   }
 
   /**
-   * Asks for an input of what grocery the user wants removed.
+   * Asks what the user wants to remove. The user will get notified if the specified
+   *    <code>Grocery</code> does not exist.
    */
   public void askToRemoveGrocery() {
-    System.out.print("What grocery do you want to remove?: ");
-    String grocery = scanner.nextLine();
-    if (fridge.groceryExists(grocery)) {
-      boolean inputAccepted = false;
+    boolean inputAccepted = false;
+    String inpGrocery = "";
+
+    // Asks for the Grocery name.
+    while (!inputAccepted) {
+      try {
+        System.out.print("What grocery do you want to remove?: ");
+        inpGrocery = scanner.nextLine();
+        scannerValidator.validateStringScanner(inpGrocery);
+        inputAccepted = true;
+      } catch (IllegalArgumentException e) {
+        printRed(e.getMessage());
+      }
+    }
+    // Asks for the amount to be removed.
+    inputAccepted = false;
+    if (fridge.groceryExists(inpGrocery)) {
       while (!inputAccepted) {
         try {
           System.out.println("How much do you want to remove?");
           double inpAmount = scannerValidator.parseToPositiveDoubleAndValidate(scanner.nextLine());
-          fridge.removeGrocery(grocery, inpAmount);
+          fridge.removeGrocery(inpGrocery, inpAmount);
           inputAccepted = true;
 
         } catch (IllegalArgumentException e) {
@@ -247,83 +281,59 @@ public class UserInterface {
           printRed(e.getMessage());
         }
       }
-
     } else {
-      printYellow("There are no " + grocery + " in the fridge.");
+      printYellow("There are no " + inpGrocery + " in the fridge.");
     }
   }
 
   /**
-   * Prints a list of all the expired groceries
-   * Name, amount and expiration date.
+   * Prints a list of all the expired groceries with name, amount and expiration date. The total
+   *    value of all expired groceries will also be displayed.
    */
   public void printExpiredGroceries() {
-
     ArrayList<Grocery> expiredGroceries;
     expiredGroceries = fridge.findExpiredGroceries();
-    StringBuilder returnString = new StringBuilder();
     double costOfExpiredGroceries = 0;
-    SimpleDateFormat descriptiveDateFormat = new SimpleDateFormat("EEEEEE dd. MMMMMMMMM yyyy"); // Prints in norwegian.
-    //SimpleDateFormat descriptiveDateFormat = new SimpleDateFormat("dd. MM yyyy"); //as only numbers
-    System.out.println("Today's date: " + descriptiveDateFormat.format(new Date()));
 
     if (expiredGroceries.isEmpty()) {
-      returnString.append("There are no expired groceries!");
+      System.out.println("There are no expired groceries!");
+
     } else {
-      returnString.append("Expired groceries: \n");
-      for (int i = 0; i < expiredGroceries.size(); i++) {
-        Grocery currentGrocery = expiredGroceries.get(i);
-        returnString.append(currentGrocery.getAmountOfGrocery() + " "
-            + currentGrocery.getMeasuringUnit() + " of "
-            + currentGrocery.getNameOfGrocery() + " expired "
-            + descriptiveDateFormat.format(currentGrocery.getExpirationDate()) + ".\n"
+      System.out.println("Expired groceries: \n");
+      for (Grocery grocery : expiredGroceries) {
+        costOfExpiredGroceries += grocery.getPricePerUnit() * grocery.getAmount();
+        System.out.println(grocery.getMeasuringUnit() + " of "
+            + grocery.getNameOfGrocery() + " expired "
+            + dateFormat.format(grocery.getExpirationDate()) + ".\n"
         );
-        costOfExpiredGroceries += currentGrocery.getPricePerUnit() * currentGrocery.getAmountOfGrocery();
       }
+      System.out.println("For a total of " + costOfExpiredGroceries + "kr.");
     }
-    returnString.append("\n For a total of " + costOfExpiredGroceries + " NOK");
-    System.out.println(returnString);
   }
 
   /**
-   * Prints the amount of the specified grocery.
+   * Prints how much of the specified <code>Grocery</code> is present in the <code>Fridge</code>.
    *
    * @param inpGrocery The grocery which shall be counted.
    */
   public void printAmountOfGrocery(String inpGrocery) {
     try {
       ParamValidators.validateString(inpGrocery);
-    } catch (IllegalArgumentException e) {
-      printRed(e.getMessage());
-    }
+      String measuringUnit = fridge.getMeasuringUnitByName(inpGrocery);
 
-    StringBuilder returnString = new StringBuilder();
-    if (fridge.getAmountOfGrocery(inpGrocery) > 0) {
-      String measuringUnit;
-      // finds the measuring unit
-
-      measuringUnit = fridge.getGroceryList().stream()
-          .filter(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGrocery))
-          .findFirst().get().getMeasuringUnit();
-
-      // Original funksjon som finner måleenheten.
-      /*for (int i = 0; i < fridge.getGroceryList().size(); i++) {
-        Grocery grocery = fridge.getGroceryList().get(i);
-        if (grocery.getNameOfGrocery().equals(inpGrocery)) {
-          measuringUnit = grocery.getMeasuringUnit();
-          break;
-        }
-      }*/
-
-      returnString.append("The fridge contains "
-              + fridge.getAmountOfGrocery(inpGrocery) + " "
-              + measuringUnit + " of "
-              + inpGrocery + "."
+      System.out.println("The fridge contains "
+          + fridge.getAmountOfGroceryByName(inpGrocery) + " "
+          + measuringUnit
+          + " of "
+          + inpGrocery + "."
       );
-    } else {
-      returnString.append("The fridge contains no " + inpGrocery + ".");
+    } catch (IllegalArgumentException e) {
+      if (fridge.getAmountOfGroceryByName(inpGrocery) == 0) {
+        System.out.println("The fridge contains no " + inpGrocery + ".");
+      } else {
+        printRed(e.getMessage());
+      }
     }
-    System.out.println(returnString);
   }
 
   /**
@@ -346,7 +356,7 @@ public class UserInterface {
   /**
    * Prints yellow text, used for example when printing warning messages.
    *
-   * @param inpString The string to be printed in yellow.
+   * @param inpString the string to be printed in yellow.
    */
   public void printYellow(String inpString) {
     System.out.println("\u001B[33m" + inpString + "\u001B[0m");
