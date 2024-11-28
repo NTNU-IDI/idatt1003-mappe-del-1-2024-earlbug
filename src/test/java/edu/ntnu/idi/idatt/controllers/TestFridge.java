@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.3.1
+ * @version 0.5.0
  */
 public class TestFridge {
 
@@ -159,7 +159,7 @@ public class TestFridge {
     fridge.addGrocery(name3, amount3, expirationDate, pricePerUnit, measuringUnit);
 
     // Act
-    double returnedAmount = fridge.getAmountOfGrocery(name1);
+    double returnedAmount = fridge.getAmountOfGroceryByName(name1);
 
     //Assert
     assertEquals(expectedAmount, returnedAmount);
@@ -185,7 +185,7 @@ public class TestFridge {
     fridge.addGrocery(name3, amount3, expirationDate, pricePerUnit, measuringUnit);
 
     // Act
-    double returnedAmount = fridge.getAmountOfGrocery("carrot");
+    double returnedAmount = fridge.getAmountOfGroceryByName("carrot");
 
     //Assert
     assertEquals(expectedAmount, returnedAmount);
@@ -198,7 +198,7 @@ public class TestFridge {
     String invalidName = "";
 
     // Act & assert
-    assertThrows(IllegalArgumentException.class, () -> fridge.getAmountOfGrocery(invalidName));
+    assertThrows(IllegalArgumentException.class, () -> fridge.getAmountOfGroceryByName(invalidName));
   }
 
 

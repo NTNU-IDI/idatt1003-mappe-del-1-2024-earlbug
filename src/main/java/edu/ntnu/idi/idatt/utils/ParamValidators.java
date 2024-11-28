@@ -5,12 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import javax.xml.validation.Validator;
 
 /**
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.4.0
+ * @version 0.5.0
  */
 public class ParamValidators {
   static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -96,7 +95,7 @@ public class ParamValidators {
     }
     try {
       validateString(inpGrocery.getNameOfGrocery());
-      validatePositiveDouble(inpGrocery.getAmountOfGrocery());
+      validatePositiveDouble(inpGrocery.getAmount());
       validateDate(inpGrocery.getExpirationDate());
       validatePositiveDouble(inpGrocery.getPricePerUnit());
       validateString(inpGrocery.getMeasuringUnit());

@@ -86,7 +86,7 @@ public class Fridge {
    * @return Returns how much the fridge has of the grocery. Return 0.0 if there are no such
    *      <code>Grocery</code>.
    */
-  public double getAmountOfGrocery(String inpGrocery) {
+  public double getAmountOfGroceryByName(String inpGrocery) {
     try {
       ParamValidators.validateString(inpGrocery);
     } catch (IllegalArgumentException e) {
