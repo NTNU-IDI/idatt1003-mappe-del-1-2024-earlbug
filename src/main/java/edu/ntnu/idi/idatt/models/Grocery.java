@@ -9,7 +9,7 @@ import java.util.Date;
  *    class where only the amount can be changed.
  *
  * @author Erlend Sundsdal
- * @version 0.3.0 2024-11-25
+ * @version 0.4.0
  * @since 0.1.0
  * @see edu.ntnu.idi.idatt.utils.ScannerValidator
  */
@@ -61,7 +61,7 @@ public class Grocery {
     return this.nameOfGrocery;
   }
 
-  public double getAmountOfGrocery() {
+  public double getAmount() {
     return this.amount;
   }
 
@@ -77,6 +77,16 @@ public class Grocery {
     return this.measuringUnit;
   }
 
+  /**
+   * Subtracts the <code>amount</code> parameter by the <code>amountChanged</code> passed. There are
+   *    no test to check if <code>amountChanged</code> is more than <code>amount</code>, which makes
+   *    it possible for the <code>amount</code> to negative and has to be handled by Fridge.
+   *
+   *
+   * @param amountChanged a positive value which will be subtracted to from <code>amount</code>.
+   *
+   * @throws IllegalArgumentException if <code>amount</code> is 0 or less.
+   */
   public void removeAmount(double amountChanged) {
     try {
       ParamValidators.validatePositiveDouble(amountChanged);
