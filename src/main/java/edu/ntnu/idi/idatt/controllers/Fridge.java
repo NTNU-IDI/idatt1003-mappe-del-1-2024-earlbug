@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.3.2
+ * @version 0.4.0
  */
 public class Fridge {
 
@@ -102,6 +102,8 @@ public class Fridge {
    *      then the existing <code>Grocery</code> will be removed. The program checks if there
    *      are more <code>Grocery</code> with the same name, and to the whole process again until
    *      the specified amount has been removed, or all the <code>inpString</code> is removed.
+   *      In other words: there isn't enough groceries to remove, all of the specified groceries
+   *      will be removed.
    *
    * @param inpGrocery name of the <code>Grocery</code> which shall be removed.
    * @param amountToRemove the amount which shall be removed.
