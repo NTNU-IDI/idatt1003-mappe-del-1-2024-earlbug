@@ -9,6 +9,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -28,6 +30,7 @@ public class UserInterface {
   Scanner scanner;
   SimpleDateFormat dateFormat;
   ScannerValidator scannerValidator;
+  HashMap<String, String> mapGroeceryNameAndMeasuringUnit;
 
 
   /**
@@ -45,6 +48,7 @@ public class UserInterface {
     dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     scannerValidator = new ScannerValidator();
     scanner = new Scanner(System.in);
+    mapGroeceryNameAndMeasuringUnit = new HashMap<>();
 
     // Dummy groceries.
     try {
@@ -210,26 +214,29 @@ public class UserInterface {
       }
     }
 
-    // Takes the measuring unit of the new grocery.
-    String inpMeasuringUnit = "";
-    boolean inpMeasuringUnitAccepted = false;
-    while (!inpMeasuringUnitAccepted) {
-      try {
-        System.out.print("Please write the measuring unit of the new Grocery: ");
-        inpMeasuringUnit = scanner.nextLine();
-        scannerValidator.validateStringScanner(inpMeasuringUnit);
-        inpMeasuringUnitAccepted = true;
-      } catch (IllegalArgumentException e) {
-        printRed(e.getMessage());
+    // Takes the measuring unit of the new grocery, if the grocery is new to the program.
+    if (!mapGroeceryNameAndMeasuringUnit.containsKey(inpGroceryName)) {
+      String inpMeasuringUnit;
+      boolean inpMeasuringUnitAccepted = false;
+
+      while (!inpMeasuringUnitAccepted) {
+        try {
+          System.out.print("Please write the measuring unit of the new Grocery: ");
+          inpMeasuringUnit = scanner.nextLine();
+          scannerValidator.validateStringScanner(inpMeasuringUnit);
+          inpMeasuringUnitAccepted = true;
+          mapGroeceryNameAndMeasuringUnit.put(inpGroceryName, inpMeasuringUnit);
+        } catch (IllegalArgumentException e) {
+          printRed(e.getMessage());
+        }
       }
     }
 
     // Tries to add grocery to Fridge.
     try {
-      fridge.addGrocery(inpGroceryName, inpAmount, expirationDate, inpPricePerUnit,
-          inpMeasuringUnit);
-      System.out.println(inpAmount + " " + inpMeasuringUnit + " of "
-          + inpGroceryName + " added successfully.");
+      fridge.addGrocery(inpGroceryName, inpAmount, expirationDate, inpPricePerUnit);
+      System.out.println(inpAmount + " " + mapGroeceryNameAndMeasuringUnit.get(inpGroceryName)
+          + " of " + inpGroceryName + " added successfully.");
     } catch (IllegalArgumentException e) {
       System.out.println(e.getMessage());
     }
@@ -241,7 +248,8 @@ public class UserInterface {
   public void printFridgeContent() {
     System.out.println("The fridge currently contains:");
     for (Grocery grocery : fridge.getGroceryList()) {
-      System.out.println(grocery.getAmount() + " " + grocery.getMeasuringUnit() + " of "
+      System.out.println(grocery.getAmount() + " "
+          + mapGroeceryNameAndMeasuringUnit.get(grocery.getNameOfGrocery()) + " of "
           + grocery.getNameOfGrocery()
       );
     }
@@ -302,7 +310,8 @@ public class UserInterface {
       System.out.println("Expired groceries: \n");
       for (Grocery grocery : expiredGroceries) {
         costOfExpiredGroceries += grocery.getPricePerUnit() * grocery.getAmount();
-        System.out.println(grocery.getMeasuringUnit() + " of "
+        System.out.println(grocery.getAmount()
+            + mapGroeceryNameAndMeasuringUnit.get(grocery.getNameOfGrocery()) + " of "
             + grocery.getNameOfGrocery() + " expired "
             + dateFormat.format(grocery.getExpirationDate()) + ".\n"
         );
@@ -334,6 +343,29 @@ public class UserInterface {
         printRed(e.getMessage());
       }
     }
+  }
+
+  /**
+   * Gets the measuring unit for the corresponding Grocery name if it exists. If not, then an
+   *    <code>IllegalArgumentException</code> will be thrown.
+   *
+   * @param inpGroceryName name of the <code>Grocery</code> to find the <code>measuringUnit</code>
+   *                       to.
+   * @return measuring unit of specified <code>Grocery</code>.
+   * @throws IllegalArgumentException if <code>inpGroceryName</code> is empty, or the measuringUnit
+   *      does not exist.
+   */
+  public String getMeasuringUnitByName(String inpGroceryName) {
+    try {
+      ParamValidators.validateString(inpGroceryName);
+    } catch (IllegalArgumentException e) {
+      System.out.println(e.getMessage());
+    }
+    String returnValue = mapGroeceryNameAndMeasuringUnit.get(inpGroceryName);
+    if (returnValue == null) {
+      throw new IllegalArgumentException("There are no measuring unit for " + inpGroceryName);
+    }
+    return mapGroeceryNameAndMeasuringUnit.get(inpGroceryName);
   }
 
   /**

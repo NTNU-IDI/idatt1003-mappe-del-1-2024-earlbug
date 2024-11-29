@@ -9,7 +9,7 @@ import java.util.Date;
  *    class where only the amount can be changed.
  *
  * @author Erlend Sundsdal
- * @version 0.4.0
+ * @version 0.5.1
  * @since 0.1.0
  * @see edu.ntnu.idi.idatt.utils.ScannerValidator
  */
@@ -19,7 +19,6 @@ public class Grocery {
   private double amount;
   private final Date expirationDate;
   private final double pricePerUnit;
-  private final String measuringUnit;
 
   /**
    * Constructor for grocery class.
@@ -33,19 +32,16 @@ public class Grocery {
    *               can be changed with <code>removeAmount(double)</code>. Amount must be positive.
    * @param expirationDate expiration date of the grocery as a <code>Date</code> object.
    * @param pricePerUnit price per measuring unit.
-   * @param measuringUnit measuring unit of the grocery, preferably in SI units to make the
-   *                      groceries universal to both <code>Fridge</code> and <code>Recipe</code>.
    *
    * @see edu.ntnu.idi.idatt.utils.ScannerValidator#parseStringToDateAndValidate(String)
    */
   public Grocery(String nameOfGrocery, double amount,
-      Date expirationDate, double pricePerUnit, String measuringUnit) {
+      Date expirationDate, double pricePerUnit) {
     try {
       ParamValidators.validateString(nameOfGrocery);
       ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(amount));
       ParamValidators.validateDate(expirationDate);
       ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(pricePerUnit));
-      ParamValidators.validateString(measuringUnit);
     } catch (IllegalArgumentException e) {
       throw e;
     }
@@ -54,7 +50,6 @@ public class Grocery {
     this.amount = amount;
     this.expirationDate = expirationDate;
     this.pricePerUnit = pricePerUnit;
-    this.measuringUnit = measuringUnit;
   }
 
   public String getNameOfGrocery() {
@@ -73,9 +68,6 @@ public class Grocery {
     return this.pricePerUnit;
   }
 
-  public String getMeasuringUnit() {
-    return this.measuringUnit;
-  }
 
   /**
    * Subtracts the <code>amount</code> parameter by the <code>amountChanged</code> passed. There are
@@ -129,7 +121,6 @@ public class Grocery {
 
     return getNameOfGrocery().equalsIgnoreCase(inpGrocery.getNameOfGrocery())
         && getExpirationDate().equals(inpGrocery.getExpirationDate())
-        && getPricePerUnit() == inpGrocery.getPricePerUnit()
-        && getMeasuringUnit().equalsIgnoreCase(inpGrocery.getMeasuringUnit());
+        && getPricePerUnit() == inpGrocery.getPricePerUnit();
   }
 }
