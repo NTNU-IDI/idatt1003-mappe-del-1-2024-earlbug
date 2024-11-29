@@ -256,7 +256,7 @@ public class TestFridge {
 
     // Assert
     assertEquals(1, expiredGroceries.size());
-    assertEquals(name1, expiredGroceries.get(0).getNameOfGrocery());
+    assertEquals(name1, expiredGroceries.get(0).getName());
   }
 
   @Test
@@ -353,8 +353,8 @@ public class TestFridge {
 
     // Assert
     assertEquals(2, groceryList.size());
-    assertEquals(name1, groceryList.get(0).getNameOfGrocery());
-    assertEquals(name2, groceryList.get(1).getNameOfGrocery());
+    assertEquals(name1, groceryList.get(0).getName());
+    assertEquals(name2, groceryList.get(1).getName());
   }
 
 

@@ -49,7 +49,7 @@ public class TestGrocery {
     String expectedName1 = "Milk";
 
     // Act
-    String returnedName1 = grocery1.getNameOfGrocery();
+    String returnedName1 = grocery1.getName();
 
     // Assert
     assertEquals(expectedName1, returnedName1);
