@@ -3,23 +3,24 @@ package edu.ntnu.idi.idatt.models;
 import edu.ntnu.idi.idatt.utils.ParamValidators;
 import java.util.Date;
 
+
 /**
  * The class Grocery.
  * This class is the main entity which will represent a collection of food units. It is a mutable
  *    class where only the amount can be changed.
  *
  * @author Erlend Sundsdal
- * @version 0.4.0
+ * @version 0.6.0
  * @since 0.1.0
  * @see edu.ntnu.idi.idatt.utils.ScannerValidator
  */
 public class Grocery {
 
-  private final String nameOfGrocery;
+  private String name;
   private double amount;
-  private final Date expirationDate;
-  private final double pricePerUnit;
-  private final String measuringUnit;
+  private Date expirationDate;
+  private double pricePerUnit;
+  private String measuringUnit;
 
   /**
    * Constructor for grocery class.
@@ -46,19 +47,34 @@ public class Grocery {
       ParamValidators.validateDate(expirationDate);
       ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(pricePerUnit));
       ParamValidators.validateString(measuringUnit);
+
+      setName(nameOfGrocery);
+      setAmount(amount);
+      setExpirationDate(expirationDate);
+      setPricePerUnit(pricePerUnit);
+      setMeasuringUnit(measuringUnit);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Grocery cannot be made:\n" + e.getMessage());
+    }
+  }
+
+  public Grocery(String nameOfGrocery, double amount, Date expirationDate) {
+    try {
+      ParamValidators.validateString(nameOfGrocery);
+      ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(amount));
+      ParamValidators.validateDate(expirationDate);
+
+      setName(nameOfGrocery);
+      setAmount(amount);
+      setExpirationDate(expirationDate);
     } catch (IllegalArgumentException e) {
       throw e;
     }
-
-    this.nameOfGrocery = nameOfGrocery;
-    this.amount = amount;
-    this.expirationDate = expirationDate;
-    this.pricePerUnit = pricePerUnit;
-    this.measuringUnit = measuringUnit;
   }
 
-  public String getNameOfGrocery() {
-    return this.nameOfGrocery;
+
+  public String getName() {
+    return this.name;
   }
 
   public double getAmount() {
@@ -77,39 +93,58 @@ public class Grocery {
     return this.measuringUnit;
   }
 
+  // Setters
+  private void setName(String inpGroceryName) throws IllegalArgumentException {
+    ParamValidators.validateString(inpGroceryName);
+    this.name = inpGroceryName;
+  }
+
+  private void setAmount(double amount) throws IllegalArgumentException {
+    ParamValidators.validatePositiveDouble(amount);
+    this.amount = amount;
+  }
+
+  private void setExpirationDate(Date expirationDate) throws IllegalArgumentException  {
+    ParamValidators.validateDate(expirationDate);
+    this.expirationDate = expirationDate;
+  }
+
+  private void setPricePerUnit(double pricePerUnit) throws IllegalArgumentException {
+    ParamValidators.validatePositiveDouble(pricePerUnit);
+    this.pricePerUnit = pricePerUnit;
+  }
+
+  private void setMeasuringUnit(String measuringUnit) throws IllegalArgumentException {
+    ParamValidators.validateString(measuringUnit);
+    this.measuringUnit = measuringUnit;
+  }
+
+
   /**
    * Subtracts the <code>amount</code> parameter by the <code>amountChanged</code> passed. There are
    *    no test to check if <code>amountChanged</code> is more than <code>amount</code>, which makes
-   *    it possible for the <code>amount</code> to negative and has to be handled by Fridge.
+   *    it possible for the <code>amount</code> to negative.
    *
    *
    * @param amountChanged a positive value which will be subtracted to from <code>amount</code>.
-   *
    * @throws IllegalArgumentException if <code>amount</code> is 0 or less.
    */
-  public void removeAmount(double amountChanged) {
-    try {
-      ParamValidators.validatePositiveDouble(amountChanged);
-    } catch (IllegalArgumentException e) {
-      throw e;
-    }
-    this.amount -= amountChanged;
+  public void removeAmount(double amountChanged) throws IllegalArgumentException {
+    ParamValidators.validatePositiveDouble(amountChanged);
+
+    setAmount(getAmount() - amountChanged);
   }
 
   /**
    * Adds the <code>amount</code> parameter by the <code>amountChanged</code> passed.
    *
    * @param amountChanged a positive value which will be added to from <code>amount</code>.
-   *
    * @throws IllegalArgumentException if <code>amount</code> is 0 or less.
    */
-  public void addAmount(double amountChanged) {
-    try {
-      ParamValidators.validatePositiveDouble(amountChanged);
-    } catch (IllegalArgumentException e) {
-      throw e;
-    }
-    this.amount += amountChanged;
+  public void addAmount(double amountChanged) throws IllegalArgumentException {
+    ParamValidators.validatePositiveDouble(amountChanged);
+
+    setAmount(getAmount() + amountChanged);
   }
 
   /**
@@ -120,14 +155,10 @@ public class Grocery {
    * @param inpGrocery the other Grocery which this grocery shall be compared with.
    * @return true if they are the same, false if not.
    */
-  public boolean equals(Grocery inpGrocery) {
-    try {
-      ParamValidators.validateGrocery(inpGrocery);
-    } catch (IllegalArgumentException e) {
-      throw e;
-    }
+  public boolean equals(Grocery inpGrocery) throws IllegalArgumentException {
+    ParamValidators.validateGrocery(inpGrocery);
 
-    return getNameOfGrocery().equalsIgnoreCase(inpGrocery.getNameOfGrocery())
+    return getName().equalsIgnoreCase(inpGrocery.getName())
         && getExpirationDate().equals(inpGrocery.getExpirationDate())
         && getPricePerUnit() == inpGrocery.getPricePerUnit()
         && getMeasuringUnit().equalsIgnoreCase(inpGrocery.getMeasuringUnit());
