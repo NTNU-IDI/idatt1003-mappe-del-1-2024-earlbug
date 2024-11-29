@@ -11,11 +11,12 @@ import java.util.ArrayList;
  * @author Erlend Sundsdal
  * @version 0.6.0
  */
-public class Recepie {
+public class Recipe {
   String name;
   String description;
   String procedure;
   ArrayList<Grocery> ingredientList;
+  int portions;
 
   /**
    * Constructor for <code>Recipe</code> class.
@@ -23,21 +24,23 @@ public class Recepie {
    * @param name the name of the dish this recipe makes
    * @param description a description of what this recipe makes
    * @param procedure how to make the dish
-   * @param ingredientList a list of all the ingredients and amount which is needed to make the
-   *                       dish.
+   * @param ingredientList a list of all the ingredients and amount which is needed to make the dish
+   * @param portions how many portions this dish yields
    */
-  public Recepie(String name, String description, String procedure,
-      ArrayList<Grocery> ingredientList) {
+  public Recipe(String name, String description, String procedure,
+      ArrayList<Grocery> ingredientList, int portions) {
     try {
       ParamValidators.validateString(name);
       ParamValidators.validateString(description);
       ParamValidators.validateString(procedure);
       ParamValidators.validateGroceryArrayList(ingredientList);
+      ParamValidators.validatePositiveInt(portions);
 
       setName(name);
       setDescription(description);
       setProcedure(procedure);
       setIngredientList(ingredientList);
+      setPortions(portions);
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("Grocery could not be made:\n" + e.getMessage());
     }
@@ -81,6 +84,10 @@ public class Recepie {
     return this.ingredientList;
   }
 
+  public int getPortions() {
+    return this.portions;
+  }
+
 
   // Setters
   private void setName(String name) throws IllegalArgumentException {
@@ -102,5 +109,10 @@ public class Recepie {
       throws IllegalArgumentException {
     ParamValidators.validateGroceryArrayList(ingredientList);
     this.ingredientList = ingredientList;
+  }
+
+  private void setPortions(int portions) throws IllegalArgumentException {
+    ParamValidators.validatePositiveInt(portions);
+    this.portions = portions;
   }
 }
