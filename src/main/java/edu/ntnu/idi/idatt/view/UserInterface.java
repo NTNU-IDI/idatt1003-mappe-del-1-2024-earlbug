@@ -21,7 +21,7 @@ import java.util.Scanner;
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.5.0
+ * @version 0.6.1
  */
 public class UserInterface {
 
