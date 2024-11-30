@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.controllers;
 
 import edu.ntnu.idi.idatt.models.Grocery;
+import edu.ntnu.idi.idatt.models.Recipe;
 import edu.ntnu.idi.idatt.utils.ParamValidators;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,7 +9,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.stream.Collectors;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -86,14 +86,14 @@ public class Fridge {
    * @return Returns how much the fridge has of the grocery. Return 0.0 if there are no such
    *      <code>Grocery</code>.
    */
-  public double getAmountOfGroceryByName(String inpGrocery) {
+  public double getAmountByName(String inpGrocery) {
     try {
       ParamValidators.validateString(inpGrocery);
     } catch (IllegalArgumentException e) {
       throw e;
     }
     return groceryList.stream()
-        .filter(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGrocery))
+        .filter(grocery -> grocery.getName().equalsIgnoreCase(inpGrocery))
         // For each Grocery element in groceryList, use grocery.getAmountOgGrocery
         .mapToDouble(Grocery::getAmount)
         .sum();
@@ -121,7 +121,7 @@ public class Fridge {
     Iterator<Grocery> iterator = groceryList.iterator();
     while (iterator.hasNext() && amountToRemove > 0) {
       Grocery grocery = iterator.next();
-      if (grocery.getNameOfGrocery().equalsIgnoreCase(inpGrocery)) {
+      if (grocery.getName().equalsIgnoreCase(inpGrocery)) {
         if (grocery.getAmount() <= amountToRemove) {
           amountToRemove -= grocery.getAmount();
           iterator.remove();
@@ -188,7 +188,7 @@ public class Fridge {
     }
 
     return groceryList.stream()
-        .anyMatch(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpGroceryString));
+        .anyMatch(grocery -> grocery.getName().equalsIgnoreCase(inpGroceryString));
   }
 
   /**
@@ -200,11 +200,40 @@ public class Fridge {
    */
   public String getMeasuringUnitByName(String inpName) {
     return groceryList.stream()
-        .filter(grocery -> grocery.getNameOfGrocery().equalsIgnoreCase(inpName))
+        .filter(grocery -> grocery.getName().equalsIgnoreCase(inpName))
         .findFirst()
         .map(Grocery::getMeasuringUnit)
         .orElseThrow(() -> new IllegalArgumentException("No Groceries with this name."));
   }
+
+  /**
+   * Checks if the fridge has enough groceries to make a certain dish. The method iterates through
+   *    all the ingredients needed and checks if <code>groceryList</code> contains enough to make
+   *    the dish.
+   *
+   * @param recipe the <code>Recipe</code> that shall be checked
+   * @return true if the dish can be made, false if not
+   */
+  public boolean canRecipeBeMadeWithFridgeContent(Recipe recipe) {
+    return recipe.getIngredientList().stream()
+        .allMatch(ingredient -> getAmountByName(ingredient.getName()) >= ingredient.getAmount());
+  }
+
+  /**
+   * Finds out what dishes the Fridge has enough groceries to make. Each recipe in the
+   *    <code>ArrayList</code> argument is checked, and if a <code>Recipe</code> can be made, it's
+   *    added to the returned <code>ArrayList</code>.
+   *
+   * @param recipeList the Arraylist<code></code> of Recipes to be checked
+   * @return an ArrayList of recipes that can be made.
+   */
+  public ArrayList<Recipe> returnAllPossibleDishesWithFridgeContent(ArrayList<Recipe> recipeList) {
+    return recipeList.stream()
+        .filter(this::canRecipeBeMadeWithFridgeContent)
+        .collect(Collectors.toCollection(ArrayList<Recipe>::new));
+  }
+
+
 
   // getter groceryList
   public ArrayList<Grocery> getGroceryList() {
