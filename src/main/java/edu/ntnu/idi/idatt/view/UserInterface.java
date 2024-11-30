@@ -1,8 +1,10 @@
 package edu.ntnu.idi.idatt.view;
 
 
+import edu.ntnu.idi.idatt.controllers.CookBook;
 import edu.ntnu.idi.idatt.controllers.Fridge;
 import edu.ntnu.idi.idatt.models.Grocery;
+import edu.ntnu.idi.idatt.models.Recipe;
 import edu.ntnu.idi.idatt.utils.ParamValidators;
 import edu.ntnu.idi.idatt.utils.ScannerValidator;
 import java.text.ParseException;
@@ -24,6 +26,7 @@ import java.util.Scanner;
 public class UserInterface {
 
   Fridge fridge;
+  CookBook cookBook;
   boolean programRunning;
   Scanner scanner;
   SimpleDateFormat dateFormat;
@@ -42,6 +45,7 @@ public class UserInterface {
    */
   public void init() {
     fridge = new Fridge();
+    cookBook = new CookBook();
     dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     scannerValidator = new ScannerValidator();
     scanner = new Scanner(System.in);
@@ -242,7 +246,7 @@ public class UserInterface {
     System.out.println("The fridge currently contains:");
     for (Grocery grocery : fridge.getGroceryList()) {
       System.out.println(grocery.getAmount() + " " + grocery.getMeasuringUnit() + " of "
-          + grocery.getNameOfGrocery()
+          + grocery.getName()
       );
     }
   }
@@ -303,7 +307,7 @@ public class UserInterface {
       for (Grocery grocery : expiredGroceries) {
         costOfExpiredGroceries += grocery.getPricePerUnit() * grocery.getAmount();
         System.out.println(grocery.getMeasuringUnit() + " of "
-            + grocery.getNameOfGrocery() + " expired "
+            + grocery.getName() + " expired "
             + dateFormat.format(grocery.getExpirationDate()) + ".\n"
         );
       }
@@ -322,17 +326,32 @@ public class UserInterface {
       String measuringUnit = fridge.getMeasuringUnitByName(inpGrocery);
 
       System.out.println("The fridge contains "
-          + fridge.getAmountOfGroceryByName(inpGrocery) + " "
+          + fridge.getAmountByName(inpGrocery) + " "
           + measuringUnit
           + " of "
           + inpGrocery + "."
       );
     } catch (IllegalArgumentException e) {
-      if (fridge.getAmountOfGroceryByName(inpGrocery) == 0) {
+      if (fridge.getAmountByName(inpGrocery) == 0) {
         System.out.println("The fridge contains no " + inpGrocery + ".");
       } else {
         printRed(e.getMessage());
       }
+    }
+  }
+
+
+  /**
+   * Prints out which of the dishes in <code>CookBook</code> can be made based off what groceries
+   *    are present in <code>groceryList</code>.
+   */
+  public void printAllPossibleDishesWithFridgeContent() {
+    ArrayList<Recipe> listOfPossibleDishes = fridge.returnAllPossibleDishesWithFridgeContent(
+        cookBook.getRecipeList());
+
+    System.out.println("Dishes that can be made with the items currently in the fridge:");
+    for (Recipe recipe : listOfPossibleDishes) {
+      System.out.println(recipe.getName());
     }
   }
 
