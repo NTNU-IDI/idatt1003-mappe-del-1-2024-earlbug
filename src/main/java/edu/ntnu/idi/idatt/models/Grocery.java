@@ -6,11 +6,11 @@ import java.util.Date;
 
 /**
  * The class Grocery.
- * This class is the main entity which will represent a collection of food units. It is a mutable
+ * This class is the main entity which will represent an amount of food units. It is a mutable
  *    class where only the amount can be changed.
  *
  * @author Erlend Sundsdal
- * @version 0.6.0
+ * @version 0.6.1
  * @since 0.1.0
  * @see edu.ntnu.idi.idatt.utils.ScannerValidator
  */
@@ -29,7 +29,7 @@ public class Grocery {
    * which requires a <code>Date</code> object.
    * The input from the user has to be parsed first, typically by <code>ScannerValidator</code>.
    *
-   * @param nameOfGrocery grocery name
+   * @param nameOfGrocery the name of the grocery
    * @param amount amount of the specified grocery,
    *               can be changed with <code>removeAmount(double)</code>. Amount must be positive.
    * @param expirationDate expiration date of the grocery as a <code>Date</code> object.
@@ -58,17 +58,27 @@ public class Grocery {
     }
   }
 
-  public Grocery(String nameOfGrocery, double amount, Date expirationDate) {
+  /**
+   * Constructor for the Grocery class, but only with three parameters. Usually used to represent an
+   *    ingredient, which don't need expiration date nor price.
+   *
+   * @param nameOfGrocery the name of the grocery
+   * @param amount amount of the specified grocery,
+   *               can be changed with <code>removeAmount(double)</code>. Amount must be positive.
+   * @param measuringUnit measuring unit of the grocery, preferably in SI units to make the
+   *                      groceries universal to both <code>Fridge</code> and <code>Recipe</code>.
+   */
+  public Grocery(String nameOfGrocery, double amount, String measuringUnit) {
     try {
       ParamValidators.validateString(nameOfGrocery);
       ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(amount));
-      ParamValidators.validateDate(expirationDate);
+      ParamValidators.validateString(measuringUnit);
 
       setName(nameOfGrocery);
       setAmount(amount);
-      setExpirationDate(expirationDate);
+      setMeasuringUnit(measuringUnit);
     } catch (IllegalArgumentException e) {
-      throw e;
+      throw new IllegalArgumentException("Grocery cannot be made:\n" + e.getMessage());
     }
   }
 
