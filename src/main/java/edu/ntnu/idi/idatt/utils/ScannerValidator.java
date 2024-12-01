@@ -37,7 +37,7 @@ public class ScannerValidator {
    * @throws IllegalArgumentException if the string cannot be parsed to float
    *      or if the number is 0 or less.
    */
-  public double parseToPositiveDoubleAndValidate(String inpDoubleAsString) {
+  public double parseToPositiveDouble(String inpDoubleAsString) {
     double returnValue;
     try {
       returnValue = Double.parseDouble(inpDoubleAsString);
