@@ -1,18 +1,21 @@
 package edu.ntnu.idi.idatt.models;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import edu.ntnu.idi.idatt.controllers.Fridge;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.3.0
+ * @version 0.6.2
  */
 public class TestGrocery {
 
@@ -41,6 +44,7 @@ public class TestGrocery {
     grocery2 = new Grocery("Bananas", 5, date2, 5.40, "units");
     grocery3 = new Grocery("Flour", 0.4, date3, 14.32, "kg");
   }
+
 
 
   @Test
@@ -259,23 +263,24 @@ public class TestGrocery {
 
 
 
-
-
-
-
-
-/*
   @Test
-  // The closest I can get to splitting into AAA, but code don't work.
-  void invalidGroceryName1() {
-    //Arrange
-    Class<IllegalArgumentException> expectedExceptioncClass = IllegalArgumentException.class;
+  void groceriesWithSameValuesShouldBeEqual() {
+    Grocery grocery4 = new Grocery("Milk", 1.5, date1, 29.9, "liters");
 
-    // Act
-    Grocery groceryWithoutName = new Grocery("", 1.5, date1, 29.9, "liters");
-
-    // Assert
-    assertThrows(expectedExceptioncClass, () -> new Grocery("", 1.5, date1, 29.9, "liters"));
+    assertTrue(grocery1.equals(grocery4));
   }
- */
+
+  @Test
+  void groceriesWithDifferentValuesShouldNotBeEqual() {
+
+    assertFalse(grocery1.equals(grocery2));
+  }
+
+
+  @Test
+  void removeAmountGreaterThanCurrentShouldThrowException() {
+    double amountToRemove = grocery1.getAmount() + 1;
+
+    assertThrows(IllegalArgumentException.class, () -> grocery1.removeAmount(amountToRemove));
+  }
 }
