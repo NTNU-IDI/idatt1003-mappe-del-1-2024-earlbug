@@ -10,7 +10,7 @@ import java.util.Date;
  *    class where only the amount can be changed.
  *
  * @author Erlend Sundsdal
- * @version 0.6.1
+ * @version 0.6.2
  * @since 0.1.0
  * @see edu.ntnu.idi.idatt.utils.ScannerValidator
  */
@@ -37,13 +37,12 @@ public class Grocery {
    * @param measuringUnit measuring unit of the grocery, preferably in SI units to make the
    *                      groceries universal to both <code>Fridge</code> and <code>Recipe</code>.
    *
-   * @see edu.ntnu.idi.idatt.utils.ScannerValidator#parseStringToDateAndValidate(String)
+   * @see edu.ntnu.idi.idatt.utils.ScannerValidator#parseStringToDate(String)
    */
   public Grocery(String nameOfGrocery, double amount,
       Date expirationDate, double pricePerUnit, String measuringUnit) {
     try {
       ParamValidators.validateString(nameOfGrocery);
-
       ParamValidators.validatePositiveDouble(amount);
       ParamValidators.validateDate(expirationDate);
       ParamValidators.validatePositiveDouble(pricePerUnit);

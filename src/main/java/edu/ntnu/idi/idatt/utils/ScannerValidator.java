@@ -11,22 +11,11 @@ import java.util.Date;
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.5.0
+ * @version 0.6.2
  */
 public class ScannerValidator {
   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-  /**
-   * Checks if the given float is positive. Nothing happens if float is valid.
-   *
-   * @param inputFloat the float value to be checked
-   * @throws IllegalArgumentException if the float value is 0 or less
-   */
-  public void checkIfFloatIsPositive(double inputFloat) {
-    if (inputFloat <= 0) {
-      throw new IllegalArgumentException("Number must be more than 0.");
-    }
-  }
 
   /**
    * Uses a simple parse function and an if test to validate if the string can be parsed to a valid
@@ -69,7 +58,7 @@ public class ScannerValidator {
    * @param inpString the string to be validated
    * @throws IllegalArgumentException if the string is empty
    */
-  public Date parseStringToDateAndValidate(String inpString) {
+  public Date parseStringToDate(String inpString) {
     Date expirationDate;
     if (inpString.equalsIgnoreCase("")) {
       throw new IllegalArgumentException("\nThe field cannot be empty.");

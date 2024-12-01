@@ -356,7 +356,7 @@ public class UserInterface {
     boolean inpExpirationDateAccepted = false;
     while (!inpExpirationDateAccepted) {
       try {
-        expirationDate = scannerValidator.parseStringToDateAndValidate(scanner.nextLine());
+        expirationDate = scannerValidator.parseStringToDate(scanner.nextLine());
         System.out.println();
         inpExpirationDateAccepted = true;
       } catch (Exception e) {
