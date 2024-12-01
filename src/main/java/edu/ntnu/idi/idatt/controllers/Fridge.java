@@ -55,7 +55,7 @@ public class Fridge {
     try {
       ParamValidators.validateString(nameOfGrocery);
       ParamValidators.validatePositiveDouble(amount);
-      ParamValidators.parseStringToDateAndValidate(simpleDateFormat.format(expirationDate));
+      ParamValidators.validateDate(expirationDate);
       ParamValidators.validatePositiveDouble(pricePerUnit);
       ParamValidators.validateString(measuringUnit);
     } catch (IllegalArgumentException e) {

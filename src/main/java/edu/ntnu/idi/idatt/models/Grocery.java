@@ -43,9 +43,10 @@ public class Grocery {
       Date expirationDate, double pricePerUnit, String measuringUnit) {
     try {
       ParamValidators.validateString(nameOfGrocery);
-      ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(amount));
+
+      ParamValidators.validatePositiveDouble(amount);
       ParamValidators.validateDate(expirationDate);
-      ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(pricePerUnit));
+      ParamValidators.validatePositiveDouble(pricePerUnit);
       ParamValidators.validateString(measuringUnit);
 
       setName(nameOfGrocery);
@@ -71,7 +72,7 @@ public class Grocery {
   public Grocery(String nameOfGrocery, double amount, String measuringUnit) {
     try {
       ParamValidators.validateString(nameOfGrocery);
-      ParamValidators.parseToPositiveDoubleAndValidate(Double.toString(amount));
+      ParamValidators.validatePositiveDouble(amount);
       ParamValidators.validateString(measuringUnit);
 
       setName(nameOfGrocery);
@@ -102,6 +103,8 @@ public class Grocery {
   public String getMeasuringUnit() {
     return this.measuringUnit;
   }
+
+
 
   // Setters
   private void setName(String inpGroceryName) throws IllegalArgumentException {
@@ -141,7 +144,6 @@ public class Grocery {
    */
   public void removeAmount(double amountChanged) throws IllegalArgumentException {
     ParamValidators.validatePositiveDouble(amountChanged);
-
     setAmount(getAmount() - amountChanged);
   }
 
