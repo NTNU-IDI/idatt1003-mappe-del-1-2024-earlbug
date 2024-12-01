@@ -9,6 +9,11 @@ import org.junit.jupiter.api.Test;
 
 public class TestCookBook {
 
+  /**
+   * @since 0.6.2
+   * @author Erlend Sundsdal
+   * @version 0.6.2
+   */
   @Test
   void addRecipeShouldAddRecipeToList() {
     CookBook cookBook = new CookBook();
