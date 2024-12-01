@@ -21,7 +21,7 @@ import java.util.Scanner;
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.6.1
+ * @version 0.6.2
  */
 public class UserInterface {
 
@@ -81,7 +81,6 @@ public class UserInterface {
    * Displays a menu with options the user can choose to do, and calls for the chosen method.
    */
   public void showMenu() {
-    int inpMenuChoice;
     System.out.println("\n\nPlease choose what you want to do:\n\n"
         + "0: Stop program\n"
         + "1: view contents of the fridge\n"
@@ -93,54 +92,40 @@ public class UserInterface {
         + "\n"
     );
 
-    try {
-      inpMenuChoice = scannerValidator.parseToPositiveInt(scanner.nextLine());
-
-      switch (inpMenuChoice) {
-        case 0:
-          System.out.println("You closed the fridge.");
-          programRunning = false;
-          break;
-        case 1:
-          printFridgeContent();
-          break;
-        case 2:
-          askForGroceryToAdd();
-          break;
-        case 3:
-          askToRemoveGrocery();
-          break;
-        case 4:
-          printExpiredGroceries();
-          break;
-        case 5:
-          askForWhatGroceryToCheck();
-          break;
-        case 6:
-          printTotalValueOfGroceriesInFridge();
-          break;
-        default:
-          printRed(inpMenuChoice + " is not an option.");
-          break;
-      }
-    } catch (IllegalArgumentException e) {
-      printRed(e.getMessage());
+    int inpMenuChoice = demandPositiveInt();
+    switch (inpMenuChoice) {
+      case 0:
+        System.out.println("You closed the fridge.");
+        programRunning = false;
+        break;
+      case 1:
+        printFridgeContent();
+        break;
+      case 2:
+        askForGroceryToAdd();
+        break;
+      case 3:
+        askToRemoveGrocery();
+        break;
+      case 4:
+        printExpiredGroceries();
+        break;
+      case 5:
+        askForWhatGroceryToCheck();
+        break;
+      case 6:
+        printTotalValueOfGroceriesInFridge();
+        break;
+      default:
+        printRed(inpMenuChoice + " is not an option.");
+        break;
     }
   }
 
   private void askForWhatGroceryToCheck() {
-    boolean validInput = false;
-    while (!validInput) {
-      try {
-        System.out.println("What grocery do you want to check?:");
-        String inpGrocery = scanner.nextLine();
-        scannerValidator.validateStringScanner(inpGrocery);
-        validInput = true;
-        printAmountOfGrocery(inpGrocery);
-      } catch (IllegalArgumentException e) {
-        printRed(e.getMessage());
-      }
-    }
+    System.out.println("What grocery do you want to check?:");
+    String inpGrocery = demandValidString();
+    printAmountOfGrocery(inpGrocery);
   }
 
   /**
@@ -151,82 +136,32 @@ public class UserInterface {
   public void askForGroceryToAdd() {
 
     // Takes the name of the new grocery.
-    String inpGroceryName = "";
-    boolean inpGroceryNameAccepted = false;
-    while (!inpGroceryNameAccepted) {
-      try {
-        System.out.print("Please write the name of the new Grocery: ");
-        inpGroceryName = scanner.nextLine();
-        scannerValidator.validateStringScanner(inpGroceryName);
-        inpGroceryNameAccepted = true;
-        System.out.println();
-      } catch (IllegalArgumentException e) {
-        printRed(e.getMessage());
-      }
-    }
+    System.out.print("Please write the name of the new Grocery: ");
+    String inpGroceryName = demandValidString();
 
     // Takes the amount of the new grocery.
-    double inpAmount = 0;
-    boolean inpAmountAccepted = false;
-    while (!inpAmountAccepted) {
-      try {
-        System.out.print("Please write the amount of the new grocery(use dot for decimals): ");
-        inpAmount = scannerValidator.parseToPositiveDoubleAndValidate(scanner.nextLine());
-        inpAmountAccepted = true;
-        System.out.println();
-      } catch (IllegalArgumentException e) {
-        printRed(e.getMessage());
-      }
-    }
+    System.out.print("Please write the amount of the new grocery(use dot for decimals): ");
+    double inpAmount = demandPositiveDouble();
+
 
     // Takes the expiration date of the new grocery.
     // Expired groceries are allowed, but the user will get notified.
-    Date expirationDate = null;
-    boolean inpExpirationDateAccepted = false;
-    while (!inpExpirationDateAccepted) {
-      try {
-        System.out.println("Please write the expiration date of the new Grocery.");
-        System.out.print("The format is as follows: yyyy-MM-dd: ");
-        expirationDate = scannerValidator.parseStringToDateAndValidate(scanner.nextLine());
-        if (expirationDate.before(new Date())) {
-          printYellow("Note: the grocery has already expired.");
-        }
-        System.out.println();
-        inpExpirationDateAccepted = true;
-
-      } catch (IllegalArgumentException e) {
-        printRed(e.getMessage());
-      }
+    System.out.println("Please write the expiration date of the new Grocery.");
+    System.out.print("The format is as follows: yyyy-MM-dd: ");
+    Date expirationDate = demandValidDate();
+    if (expirationDate.before(new Date())) {
+      printYellow("Note: the grocery has already expired.");
     }
 
     // Takes the price per unit of the new grocery.
-    double inpPricePerUnit = 0;
-    boolean inpPricePerUnitAccepted = false;
-    while (!inpPricePerUnitAccepted) {
-      try {
-        System.out.print("Please write the price per unit of the new Grocery: ");
-        inpPricePerUnit = scannerValidator.parseToPositiveDoubleAndValidate(scanner.nextLine());
-        System.out.println();
-        inpPricePerUnitAccepted = true;
 
-      } catch (IllegalArgumentException e) {
-        printRed(e.getMessage());
-      }
-    }
+    System.out.print("Please write the price per unit of the new Grocery: ");
+    double inpPricePerUnit = demandPositiveDouble();
 
     // Takes the measuring unit of the new grocery.
-    String inpMeasuringUnit = "";
-    boolean inpMeasuringUnitAccepted = false;
-    while (!inpMeasuringUnitAccepted) {
-      try {
-        System.out.print("Please write the measuring unit of the new Grocery: ");
-        inpMeasuringUnit = scanner.nextLine();
-        scannerValidator.validateStringScanner(inpMeasuringUnit);
-        inpMeasuringUnitAccepted = true;
-      } catch (IllegalArgumentException e) {
-        printRed(e.getMessage());
-      }
-    }
+
+    System.out.print("Please write the measuring unit of the new Grocery: ");
+    String inpMeasuringUnit = demandValidString();
 
     // Tries to add grocery to Fridge.
     try {
@@ -256,35 +191,17 @@ public class UserInterface {
    *    <code>Grocery</code> does not exist.
    */
   public void askToRemoveGrocery() {
-    boolean inputAccepted = false;
-    String inpGrocery = "";
 
     // Asks for the Grocery name.
-    while (!inputAccepted) {
-      try {
-        System.out.print("What grocery do you want to remove?: ");
-        inpGrocery = scanner.nextLine();
-        scannerValidator.validateStringScanner(inpGrocery);
-        inputAccepted = true;
-      } catch (IllegalArgumentException e) {
-        printRed(e.getMessage());
-      }
-    }
-    // Asks for the amount to be removed.
-    inputAccepted = false;
-    if (fridge.groceryExists(inpGrocery)) {
-      while (!inputAccepted) {
-        try {
-          System.out.println("How much do you want to remove?");
-          double inpAmount = scannerValidator.parseToPositiveDoubleAndValidate(scanner.nextLine());
-          fridge.removeGrocery(inpGrocery, inpAmount);
-          inputAccepted = true;
+    System.out.print("What grocery do you want to remove?: ");
+    String inpGrocery = demandValidString();
 
-        } catch (IllegalArgumentException e) {
-          System.out.println();
-          printRed(e.getMessage());
-        }
-      }
+    // Asks for the amount to be removed.
+    System.out.println("How much do you want to remove?");
+    double inpAmount = demandPositiveDouble();
+
+    if (fridge.groceryExists(inpGrocery)) {
+      fridge.removeGrocery(inpGrocery, inpAmount);
     } else {
       printYellow("There are no " + inpGrocery + " in the fridge.");
     }
@@ -362,6 +279,93 @@ public class UserInterface {
     System.out.println("The total value of all the groceries in the fridge are "
         + fridge.getValueOfGroceriesInFridge() + " NOK.");
   }
+
+  /**
+   * Asks the user for a positive integer. The method repeats until the user has provided a valid
+   *    integer.
+   *
+   * @return a valid, positive integer.
+   */
+  public int demandPositiveInt() {
+    boolean validInput = false;
+    int inpInt = 0;
+    while (!validInput) {
+      try {
+        String inpString = scanner.nextLine();
+        scannerValidator.validateStringScanner(inpString);
+        inpInt = scannerValidator.parseToPositiveInt(inpString);
+        validInput = true;
+      } catch (IllegalArgumentException e) {
+        printRed(e.getMessage());
+      }
+    }
+    return inpInt;
+  }
+
+  /**
+   * Asks the user for a non-empty, non-null String. The method repeats until the user has provided
+   *    a valid input.
+   *
+   * @return a valid String.
+   */
+  public String demandValidString() {
+    String inpString = "";
+    boolean stringAccepted = false;
+    while (!stringAccepted) {
+      try {
+        inpString = scanner.nextLine();
+        scannerValidator.validateStringScanner(inpString);
+        stringAccepted = true;
+        System.out.println();
+      } catch (Exception e) {
+        printRed(e.getMessage());
+      }
+    }
+    return inpString.toLowerCase();
+  }
+
+  /**
+   * Asks the user for a positive <code>float</code>. The method repeats until the user has provided
+   *    a valid input.
+   *
+   * @return a valid, positive <code>double</code>.
+   */
+  public double demandPositiveDouble() {
+    double inpFloat = 0;
+    boolean inpFloatAccepted = false;
+    while (!inpFloatAccepted) {
+      try {
+        inpFloat = scannerValidator.parseToPositiveDouble(scanner.nextLine());
+        inpFloatAccepted = true;
+        System.out.println();
+      } catch (Exception e) {
+        printRed(e.getMessage());
+      }
+    }
+    return inpFloat;
+  }
+
+  /**
+   * Asks the user for a non-null Date. The method repeats until the user has provided a valid
+   *    input.
+   *
+   * @return a valid Date.
+   */
+  public Date demandValidDate() {
+    Date expirationDate = null;
+    boolean inpExpirationDateAccepted = false;
+    while (!inpExpirationDateAccepted) {
+      try {
+        expirationDate = scannerValidator.parseStringToDateAndValidate(scanner.nextLine());
+        System.out.println();
+        inpExpirationDateAccepted = true;
+      } catch (Exception e) {
+        printRed(e.getMessage());
+      }
+    }
+    return expirationDate;
+  }
+
 
   /**
    * Prints red text, used for example when printing error messages.
