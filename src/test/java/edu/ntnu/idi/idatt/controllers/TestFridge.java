@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.5.0
+ * @version 0.6.2
  */
 public class TestFridge {
 
