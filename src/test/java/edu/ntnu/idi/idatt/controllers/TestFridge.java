@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 import edu.ntnu.idi.idatt.models.Grocery;
+import edu.ntnu.idi.idatt.models.Recipe;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,9 +86,8 @@ public class TestFridge {
     Fridge fridge = new Fridge();
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> {
-      fridge.addGrocery(name, amount, expirationDate, pricePerUnit, measuringUnit);
-    });
+    assertThrows(IllegalArgumentException.class, () ->
+        fridge.addGrocery(name, amount, expirationDate, pricePerUnit, measuringUnit));
   }
 
   @Test
@@ -101,9 +101,8 @@ public class TestFridge {
     Fridge fridge = new Fridge();
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> {
-      fridge.addGrocery(name, amount, expirationDate, pricePerUnit, measuringUnit);
-    });
+    assertThrows(IllegalArgumentException.class, () ->
+        fridge.addGrocery(name, amount, expirationDate, pricePerUnit, measuringUnit));
   }
 
   @Test
@@ -117,9 +116,8 @@ public class TestFridge {
     Fridge fridge = new Fridge();
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> {
-      fridge.addGrocery(name, amount, expirationDate, pricePerUnit, measuringUnit);
-    });
+    assertThrows(IllegalArgumentException.class, () ->
+      fridge.addGrocery(name, amount, expirationDate, pricePerUnit, measuringUnit));
   }
 
   @Test
@@ -133,9 +131,8 @@ public class TestFridge {
     Fridge fridge = new Fridge();
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> {
-      fridge.addGrocery(name, amount, expirationDate, pricePerUnit, measuringUnit);
-    });
+    assertThrows(IllegalArgumentException.class, () ->
+      fridge.addGrocery(name, amount, expirationDate, pricePerUnit, measuringUnit));
   }
 
 
@@ -159,7 +156,7 @@ public class TestFridge {
     fridge.addGrocery(name3, amount3, expirationDate, pricePerUnit, measuringUnit);
 
     // Act
-    double returnedAmount = fridge.getAmountOfGroceryByName(name1);
+    double returnedAmount = fridge.getAmountByName(name1);
 
     //Assert
     assertEquals(expectedAmount, returnedAmount);
@@ -185,7 +182,7 @@ public class TestFridge {
     fridge.addGrocery(name3, amount3, expirationDate, pricePerUnit, measuringUnit);
 
     // Act
-    double returnedAmount = fridge.getAmountOfGroceryByName("carrot");
+    double returnedAmount = fridge.getAmountByName("carrot");
 
     //Assert
     assertEquals(expectedAmount, returnedAmount);
@@ -198,7 +195,7 @@ public class TestFridge {
     String invalidName = "";
 
     // Act & assert
-    assertThrows(IllegalArgumentException.class, () -> fridge.getAmountOfGroceryByName(invalidName));
+    assertThrows(IllegalArgumentException.class, () -> fridge.getAmountByName(invalidName));
   }
 
 
@@ -357,34 +354,105 @@ public class TestFridge {
     assertEquals(name2, groceryList.get(1).getName());
   }
 
-
-
-
-
-
-
-
-
-
-
   @Test
-  void k () {
+  void getMeasuringUnitByNameShouldReturnCorrectUnit() throws ParseException {
     // Arrange
+    String name = "Milk";
+    String measuringUnit = "liter";
+    Date expirationDate = simpleDateFormat.parse("2023-12-31");
+    Fridge fridge = new Fridge();
+    fridge.addGrocery(name, 1.0, expirationDate, 20.5, measuringUnit);
 
     // Act
+    String returnedUnit = fridge.getMeasuringUnitByName(name);
 
-    //Assert
-
+    // Assert
+    assertEquals(measuringUnit, returnedUnit);
   }
+
   @Test
-  void n () {
+  void getMeasuringUnitByNameShouldThrowExceptionIfGroceryDoesNotExist() {
     // Arrange
+    Fridge fridge = new Fridge();
+
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> fridge.getMeasuringUnitByName("NonExistentGrocery"));
+  }
+
+  @Test
+  void canRecipeBeMadeWithFridgeContentShouldReturnTrueIfAllIngredientsAreAvailable() throws ParseException {
+    // Arrange
+    Fridge fridge = new Fridge();
+    fridge.addGrocery("Milk", 1.0, simpleDateFormat.parse("2023-12-31"), 20.5, "liter");
+    fridge.addGrocery("Eggs", 2.0, simpleDateFormat.parse("2023-12-31"), 10.0, "dozen");
+
+    ArrayList<Grocery> ingredients = new ArrayList<>();
+    ingredients.add(new Grocery("Milk", 1.0, "liter"));
+    ingredients.add(new Grocery("Eggs", 2.0, "dozen"));
+    Recipe recipe = new Recipe("Pancakes", "Delicious pancakes", "Mix and cook", ingredients, 4);
 
     // Act
+    boolean canBeMade = fridge.canRecipeBeMadeWithFridgeContent(recipe);
 
-    //Assert
-
+    // Assert
+    assertTrue(canBeMade);
   }
+
+  @Test
+  void canRecipeBeMadeWithFridgeContentShouldReturnFalseIfNotAllIngredientsAreAvailable() throws ParseException {
+    // Arrange
+    Fridge fridge = new Fridge();
+    fridge.addGrocery("Milk", 1.0, simpleDateFormat.parse("2023-12-31"), 20.5, "liter");
+
+    ArrayList<Grocery> ingredients = new ArrayList<>();
+    ingredients.add(new Grocery("Milk", 1.0, "liter"));
+    ingredients.add(new Grocery("Eggs", 2.0, "dozen"));
+    Recipe recipe = new Recipe("Pancakes", "Delicious pancakes", "Mix and cook", ingredients, 4);
+
+    // Act
+    boolean canBeMade = fridge.canRecipeBeMadeWithFridgeContent(recipe);
+
+    // Assert
+    assertFalse(canBeMade);
+  }
+
+  @Test
+  void returnAllPossibleDishesWithFridgeContentShouldReturnAllPossibleRecipes() throws ParseException {
+    // Arrange
+    Fridge fridge = new Fridge();
+    fridge.addGrocery("Milk", 1.0, simpleDateFormat.parse("2023-12-31"), 20.5, "liter");
+    fridge.addGrocery("Eggs", 2.0, simpleDateFormat.parse("2023-12-31"), 10.0, "dozen");
+
+    ArrayList<Grocery> ingredients1 = new ArrayList<>();
+    ingredients1.add(new Grocery("Milk", 1.0, "liter"));
+    ingredients1.add(new Grocery("Eggs", 2.0, "dozen"));
+    Recipe recipe1 = new Recipe("Pancakes", "Delicious pancakes", "Mix and cook", ingredients1, 4);
+
+    ArrayList<Grocery> ingredients2 = new ArrayList<>();
+    ingredients2.add(new Grocery("Milk", 1.0, "liter"));
+    Recipe recipe2 = new Recipe("Milkshake", "Tasty milkshake", "Blend and serve", ingredients2, 2);
+
+    ArrayList<Recipe> recipeList = new ArrayList<>();
+    recipeList.add(recipe1);
+    recipeList.add(recipe2);
+
+    // Act
+    ArrayList<Recipe> possibleDishes = fridge.returnAllPossibleDishesWithFridgeContent(recipeList);
+
+    // Assert
+    assertEquals(2, possibleDishes.size());
+    assertTrue(possibleDishes.contains(recipe1));
+    assertTrue(possibleDishes.contains(recipe2));
+  }
+
+
+
+
+
+
+
+
+
   @Test
   void o () {
     // Arrange
