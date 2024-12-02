@@ -19,7 +19,7 @@ public class CookBook {
       ParamValidators.validateString(name);
       ParamValidators.validateString(description);
       ParamValidators.validateString(procedure);
-      ParamValidators.validateGroceryArrayList(ingredientList);
+      ParamValidators.validateArrayList(ingredientList);
       ParamValidators.validatePositiveInt(portions);
 
       Recipe newRecipe = new Recipe(name, description, procedure, ingredientList, portions);
