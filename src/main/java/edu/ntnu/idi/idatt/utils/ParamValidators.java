@@ -1,6 +1,7 @@
 package edu.ntnu.idi.idatt.utils;
 
 import edu.ntnu.idi.idatt.models.Grocery;
+import edu.ntnu.idi.idatt.models.Recipe;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -39,7 +40,7 @@ public class ParamValidators {
     }
   }
 
-  public static void validateGroceryArrayList(ArrayList<Grocery> arrayList) {
+  public static void validateArrayList(ArrayList arrayList) {
     if (arrayList == null) {
       throw new IllegalArgumentException("The ArrayList is null. Please try again.");
     }
@@ -62,4 +63,30 @@ public class ParamValidators {
       throw new IllegalArgumentException("Grocery is invalid:\n" + e.getMessage());
     }
   }
+
+  public static void validateGroceryIngredient(Grocery inpGrocery) {
+    if (inpGrocery == null) {
+      throw new IllegalArgumentException("The ingredient is null. Please try again.");
+    }
+    try {
+      validateString(inpGrocery.getName());
+      validatePositiveDouble(inpGrocery.getAmount());
+      validateDate(inpGrocery.getExpirationDate());
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Ingredient is invalid:\n" + e.getMessage());
+    }
+  }
+
+  public static void validateRecipe(Recipe inpRecipe) {
+    try {
+      ParamValidators.validateString(inpRecipe.getName());
+      ParamValidators.validateString(inpRecipe.getDescription());
+      ParamValidators.validateString(inpRecipe.getProcedure());
+      ParamValidators.validateArrayList(inpRecipe.getIngredientList());
+      ParamValidators.validatePositiveInt(inpRecipe.getPortions());
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Invalid recipe:\n" + e.getMessage());
+    }
+  }
+
 }
