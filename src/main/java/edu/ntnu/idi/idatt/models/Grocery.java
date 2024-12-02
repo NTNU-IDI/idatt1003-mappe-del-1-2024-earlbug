@@ -82,15 +82,29 @@ public class Grocery {
     }
   }
 
-
+  /**
+   * Gets the name of this <code>Grocery</code>.
+   *
+   * @return a <code>String</code> with the name of this <code>Grocery</code>.
+   */
   public String getName() {
     return this.name;
   }
 
+  /**
+   * Gets the name of this <code>Grocery</code>.
+   *
+   * @return a <code>String</code> with the name of this <code>Grocery</code>.
+   */
   public double getAmount() {
     return this.amount;
   }
 
+  /**
+   * Gets the <code>Date</code> of this <code>Grocery</code>.
+   *
+   * @return a <code>Date</code> instance with the date of this <code>Grocery</code>.
+   */
   public Date getExpirationDate() {
     return this.expirationDate;
   }
@@ -99,6 +113,11 @@ public class Grocery {
     return this.pricePerUnit;
   }
 
+  /**
+   * Gets the measuring unit of this <code>Grocery</code>.
+   *
+   * @return a <code>String</code> with the measuring unit of this <code>Grocery</code>.
+   */
   public String getMeasuringUnit() {
     return this.measuringUnit;
   }
@@ -141,9 +160,13 @@ public class Grocery {
    * @param amountChanged a positive value which will be subtracted to from <code>amount</code>.
    * @throws IllegalArgumentException if <code>amount</code> is 0 or less.
    */
-  public void removeAmount(double amountChanged) throws IllegalArgumentException {
-    ParamValidators.validatePositiveDouble(amountChanged);
-    setAmount(getAmount() - amountChanged);
+  public void removeAmount(double amountChanged) {
+    try {
+      ParamValidators.validatePositiveDouble(amountChanged);
+      setAmount(getAmount() - amountChanged);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Could not remove amount:\n" + e.getMessage());
+    }
   }
 
   /**
@@ -152,10 +175,13 @@ public class Grocery {
    * @param amountChanged a positive value which will be added to from <code>amount</code>.
    * @throws IllegalArgumentException if <code>amount</code> is 0 or less.
    */
-  public void addAmount(double amountChanged) throws IllegalArgumentException {
-    ParamValidators.validatePositiveDouble(amountChanged);
-
-    setAmount(getAmount() + amountChanged);
+  public void addAmount(double amountChanged) {
+    try {
+      ParamValidators.validatePositiveDouble(amountChanged);
+      setAmount(getAmount() + amountChanged);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Could not add amount:\n" + e.getMessage());
+    }
   }
 
   /**
@@ -166,9 +192,12 @@ public class Grocery {
    * @param inpGrocery the other Grocery which this grocery shall be compared with.
    * @return true if they are the same, false if not.
    */
-  public boolean equals(Grocery inpGrocery) throws IllegalArgumentException {
-    ParamValidators.validateGrocery(inpGrocery);
-
+  public boolean equals(Grocery inpGrocery) {
+    try {
+      ParamValidators.validateGrocery(inpGrocery);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Could not check grocery:\n" + e.getMessage());
+    }
     return getName().equalsIgnoreCase(inpGrocery.getName())
         && getExpirationDate().equals(inpGrocery.getExpirationDate())
         && getPricePerUnit() == inpGrocery.getPricePerUnit()
