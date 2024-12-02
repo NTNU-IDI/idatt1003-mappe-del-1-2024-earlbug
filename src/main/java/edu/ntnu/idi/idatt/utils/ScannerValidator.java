@@ -14,7 +14,6 @@ import java.util.Date;
  * @version 0.6.2
  */
 public class ScannerValidator {
-  SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 
   /**
@@ -26,7 +25,7 @@ public class ScannerValidator {
    * @throws IllegalArgumentException if the string cannot be parsed to float
    *      or if the number is 0 or less.
    */
-  public double parseToPositiveDouble(String inpDoubleAsString) {
+  public static double parseToPositiveDouble(String inpDoubleAsString) {
     double returnValue;
     try {
       returnValue = Double.parseDouble(inpDoubleAsString);
@@ -46,7 +45,7 @@ public class ScannerValidator {
    * @param inpString the string to be validated
    * @throws IllegalArgumentException if the string is empty
    */
-  public void validateStringScanner(String inpString) {
+  public static void validateStringScanner(String inpString) {
     if (inpString.equalsIgnoreCase("")) {
       throw new IllegalArgumentException("\nThe field cannot be empty");
     }
@@ -58,7 +57,9 @@ public class ScannerValidator {
    * @param inpString the string to be validated
    * @throws IllegalArgumentException if the string is empty
    */
-  public Date parseStringToDate(String inpString) {
+  public static Date parseStringToDate(String inpString) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     Date expirationDate;
     if (inpString.equalsIgnoreCase("")) {
       throw new IllegalArgumentException("\nThe field cannot be empty.");
@@ -79,7 +80,7 @@ public class ScannerValidator {
    * @throws IllegalArgumentException if the string is empty, cannot be parsed to an integer or is
    *      negative.
    */
-  public int parseToPositiveInt(String inpIntString) {
+  public static int parseToPositiveInt(String inpIntString) {
     int returnInt;
     if (inpIntString.equalsIgnoreCase("")) {
       throw new IllegalArgumentException("The field cannot be empty.");

@@ -30,8 +30,6 @@ public class UserInterface {
   boolean programRunning;
   Scanner scanner;
   SimpleDateFormat dateFormat;
-  ScannerValidator scannerValidator;
-
 
   /**
    * Fridge constructor.
@@ -47,7 +45,6 @@ public class UserInterface {
     fridge = new Fridge();
     cookBook = new CookBook();
     dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    scannerValidator = new ScannerValidator();
     scanner = new Scanner(System.in);
 
     // Dummy groceries.
@@ -292,8 +289,8 @@ public class UserInterface {
     while (!validInput) {
       try {
         String inpString = scanner.nextLine();
-        scannerValidator.validateStringScanner(inpString);
-        inpInt = scannerValidator.parseToPositiveInt(inpString);
+        ScannerValidator.validateStringScanner(inpString);
+        inpInt = ScannerValidator.parseToPositiveInt(inpString);
         validInput = true;
       } catch (IllegalArgumentException e) {
         printRed(e.getMessage());
@@ -314,7 +311,7 @@ public class UserInterface {
     while (!stringAccepted) {
       try {
         inpString = scanner.nextLine();
-        scannerValidator.validateStringScanner(inpString);
+        ScannerValidator.validateStringScanner(inpString);
         stringAccepted = true;
         System.out.println();
       } catch (Exception e) {
@@ -335,7 +332,7 @@ public class UserInterface {
     boolean inpFloatAccepted = false;
     while (!inpFloatAccepted) {
       try {
-        inpFloat = scannerValidator.parseToPositiveDouble(scanner.nextLine());
+        inpFloat = ScannerValidator.parseToPositiveDouble(scanner.nextLine());
         inpFloatAccepted = true;
         System.out.println();
       } catch (Exception e) {
@@ -356,7 +353,7 @@ public class UserInterface {
     boolean inpExpirationDateAccepted = false;
     while (!inpExpirationDateAccepted) {
       try {
-        expirationDate = scannerValidator.parseStringToDate(scanner.nextLine());
+        expirationDate = ScannerValidator.parseStringToDate(scanner.nextLine());
         System.out.println();
         inpExpirationDateAccepted = true;
       } catch (Exception e) {
