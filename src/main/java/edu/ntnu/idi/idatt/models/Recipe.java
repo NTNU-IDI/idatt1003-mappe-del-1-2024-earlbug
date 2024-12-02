@@ -33,7 +33,7 @@ public class Recipe {
       ParamValidators.validateString(name);
       ParamValidators.validateString(description);
       ParamValidators.validateString(procedure);
-      ParamValidators.validateGroceryArrayList(ingredientList);
+      ParamValidators.validateArrayList(ingredientList);
       ParamValidators.validatePositiveInt(portions);
 
       setName(name);
@@ -107,7 +107,7 @@ public class Recipe {
 
   private void setIngredientList(ArrayList<Grocery> ingredientList)
       throws IllegalArgumentException {
-    ParamValidators.validateGroceryArrayList(ingredientList);
+    ParamValidators.validateArrayList(ingredientList);
     this.ingredientList = ingredientList;
   }
 

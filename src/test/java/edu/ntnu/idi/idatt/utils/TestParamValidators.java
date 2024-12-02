@@ -124,23 +124,23 @@ public class TestParamValidators {
   }
 
   @Test
-  void validateGroceryArrayListShouldThrowIllegalArgumentExceptionWhenNull() {
+  void validateArrayListShouldThrowIllegalArgumentExceptionWhenNull() {
     // Arrange
     ArrayList<Grocery> nullArrayList = null;
 
     // Act & Assert
     assertThrows(IllegalArgumentException.class, () ->
-      ParamValidators.validateGroceryArrayList(nullArrayList));
+      ParamValidators.validateArrayList(nullArrayList));
   }
 
   @Test
-  void validateGroceryArrayListShouldThrowIllegalArgumentExceptionWhenEmpty() {
+  void validateArrayListShouldThrowIllegalArgumentExceptionWhenEmpty() {
     // Arrange
     ArrayList<Grocery> emptyArrayList = new ArrayList<>();
 
     // Act & Assert
     assertThrows(IllegalArgumentException.class, () ->
-      ParamValidators.validateGroceryArrayList(emptyArrayList));
+      ParamValidators.validateArrayList(emptyArrayList));
   }
 
   @Test
