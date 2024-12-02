@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.stream.Collectors;
-import java.util.Map;
 
 /**
  * The class <code>Fridge</code> class represents a storage for food, in the sense that it stores
@@ -27,7 +26,6 @@ public class Fridge {
 
   private ArrayList<Grocery> groceryList;
   SimpleDateFormat simpleDateFormat;
-  Map<String, String> mapGroceryNameAndMeasuringUnit;
 
   /**
    * Creates an instance of Fridge. The groceryList is initialized, and the date format is set.
@@ -35,7 +33,6 @@ public class Fridge {
   public Fridge() {
     groceryList = new ArrayList<>();
     simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
   }
 
   /**
@@ -59,7 +56,7 @@ public class Fridge {
       ParamValidators.validatePositiveDouble(pricePerUnit);
       ParamValidators.validateString(measuringUnit);
     } catch (IllegalArgumentException e) {
-      throw e;
+      throw new IllegalArgumentException("Grocery could not be added:\n" +e.getMessage());
     }
     // If the new grocery exists, increase existing grocery amount.
     newGrocery = new Grocery(nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit);
@@ -90,7 +87,7 @@ public class Fridge {
     try {
       ParamValidators.validateString(inpGrocery);
     } catch (IllegalArgumentException e) {
-      throw e;
+      throw new IllegalArgumentException("Could not get amount:\n" + e.getMessage());
     }
     return groceryList.stream()
         .filter(grocery -> grocery.getName().equalsIgnoreCase(inpGrocery))
@@ -112,25 +109,29 @@ public class Fridge {
    * @param amountToRemove the amount which shall be removed.
    */
   public void removeGrocery(String inpGrocery, double amountToRemove) throws IllegalArgumentException {
-    ParamValidators.validateString(inpGrocery);
-    ParamValidators.validatePositiveDouble(amountToRemove);
+    try {
+      ParamValidators.validateString(inpGrocery);
+      ParamValidators.validatePositiveDouble(amountToRemove);
 
-    groceryList.sort(
-        Comparator.comparing(Grocery::getExpirationDate)); // Sorts array based on exp.date.
+      groceryList.sort(
+          Comparator.comparing(Grocery::getExpirationDate)); // Sorts array based on exp.date.
 
-    Iterator<Grocery> iterator = groceryList.iterator();
-    while (iterator.hasNext() && amountToRemove > 0) {
-      Grocery grocery = iterator.next();
-      if (grocery.getName().equalsIgnoreCase(inpGrocery)) {
-        if (grocery.getAmount() <= amountToRemove) {
-          amountToRemove -= grocery.getAmount();
-          iterator.remove();
-        } else {
-          double groceryAmount = grocery.getAmount();
-          grocery.removeAmount(amountToRemove);
-          amountToRemove -= groceryAmount;
+      Iterator<Grocery> iterator = groceryList.iterator();
+      while (iterator.hasNext() && amountToRemove > 0) {
+        Grocery grocery = iterator.next();
+        if (grocery.getName().equalsIgnoreCase(inpGrocery)) {
+          if (grocery.getAmount() <= amountToRemove) {
+            amountToRemove -= grocery.getAmount();
+            iterator.remove();
+          } else {
+            double groceryAmount = grocery.getAmount();
+            grocery.removeAmount(amountToRemove);
+            amountToRemove -= groceryAmount;
+          }
         }
       }
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Could not remove Grocery:\n" + e.getMessage());
     }
   }
 
@@ -184,11 +185,12 @@ public class Fridge {
     try {
       ParamValidators.validateString(inpGroceryString);
     } catch (IllegalArgumentException e) {
-      throw e;
+      throw new IllegalArgumentException("Could not check if Grocery exists:\n" + e.getMessage());
     }
 
     return groceryList.stream()
         .anyMatch(grocery -> grocery.getName().equalsIgnoreCase(inpGroceryString));
+
   }
 
   /**
@@ -199,11 +201,15 @@ public class Fridge {
    * @return measuring unit of specified <code>Grocery</code>.
    */
   public String getMeasuringUnitByName(String inpName) {
-    return groceryList.stream()
-        .filter(grocery -> grocery.getName().equalsIgnoreCase(inpName))
-        .findFirst()
-        .map(Grocery::getMeasuringUnit)
-        .orElseThrow(() -> new IllegalArgumentException("No Groceries with this name."));
+    try {
+      return groceryList.stream()
+          .filter(grocery -> grocery.getName().equalsIgnoreCase(inpName))
+          .findFirst()
+          .map(Grocery::getMeasuringUnit)
+          .orElseThrow(() -> new IllegalArgumentException("No Groceries with this name."));
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Could not get measuring unit:\n" + e.getMessage());
+    }
   }
 
   /**
@@ -214,7 +220,8 @@ public class Fridge {
    * @param recipe the <code>Recipe</code> that shall be checked
    * @return true if the dish can be made, false if not
    */
-  public boolean canRecipeBeMadeWithFridgeContent(Recipe recipe) {
+  public boolean canRecipeBeMadeWithFridgeContent(Recipe recipe) throws IllegalArgumentException {
+    ParamValidators.validateRecipe(recipe);
     return recipe.getIngredientList().stream()
         .allMatch(ingredient -> getAmountByName(ingredient.getName()) >= ingredient.getAmount());
   }
@@ -228,6 +235,7 @@ public class Fridge {
    * @return an ArrayList of recipes that can be made.
    */
   public ArrayList<Recipe> returnAllPossibleDishesWithFridgeContent(ArrayList<Recipe> recipeList) {
+    ParamValidators.validateArrayList(recipeList);
     return recipeList.stream()
         .filter(this::canRecipeBeMadeWithFridgeContent)
         .collect(Collectors.toCollection(ArrayList<Recipe>::new));
@@ -241,7 +249,12 @@ public class Fridge {
   }
 
   private void setGroceryList(ArrayList<Grocery> newGroceryList) {
-    this.groceryList = newGroceryList;
+    try {
+      ParamValidators.validateArrayList(newGroceryList);
+      this.groceryList = newGroceryList;
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Could not set Fridge ArrayList:\n" + e.getMessage());
+    }
   }
 
 
