@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.6.1
+ * @version 0.6.3
  */
 public class Fridge {
 
@@ -45,6 +45,7 @@ public class Fridge {
    * @param expirationDate specifies at what date the grocery expires. As a Date object.
    * @param pricePerUnit the price of each unit of the grocery.
    * @param measuringUnit the unit the grocery is measured in. Preferably SI units.
+   * @throws IllegalArgumentException if any of the parameters are invalid
    */
   public void addGrocery(String nameOfGrocery, double amount, Date expirationDate,
       double pricePerUnit, String measuringUnit) {
@@ -82,6 +83,7 @@ public class Fridge {
    *
    * @return Returns how much the fridge has of the grocery. Return 0.0 if there are no such
    *      <code>Grocery</code>.
+   * @throws IllegalArgumentException if the passed Grocery is invalid
    */
   public double getAmountByName(String inpGrocery) {
     try {
@@ -107,6 +109,7 @@ public class Fridge {
    *
    * @param inpGrocery name of the <code>Grocery</code> which shall be removed.
    * @param amountToRemove the amount which shall be removed.
+   * @throws IllegalArgumentException if any of the parameters are invalid
    */
   public void removeGrocery(String inpGrocery, double amountToRemove) throws IllegalArgumentException {
     try {
@@ -180,6 +183,7 @@ public class Fridge {
    * @param inpGroceryString the name which shall be used to search for <code>Grocery</code>
    *                         instances.
    * @return true if the grocery is found, false if not.
+   * @throws IllegalArgumentException if the parameters is invalid
    */
   public boolean groceryExists(String inpGroceryString) {
     try {
@@ -199,6 +203,7 @@ public class Fridge {
    *
    * @param inpName name of the <code>Grocery</code> to find the <code>measuringUnit</code> to.
    * @return measuring unit of specified <code>Grocery</code>.
+   * @throws IllegalArgumentException if the parameters is invalid or the Grocery does not exist
    */
   public String getMeasuringUnitByName(String inpName) {
     try {
@@ -219,9 +224,15 @@ public class Fridge {
    *
    * @param recipe the <code>Recipe</code> that shall be checked
    * @return true if the dish can be made, false if not
+   * @throws IllegalArgumentException if the parameter is invalid
    */
   public boolean canRecipeBeMadeWithFridgeContent(Recipe recipe) throws IllegalArgumentException {
-    ParamValidators.validateRecipe(recipe);
+    try {
+      ParamValidators.validateRecipe(recipe);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException(
+          "Could not check if recipe could be made:\n" + e.getMessage());
+    }
     return recipe.getIngredientList().stream()
         .allMatch(ingredient -> getAmountByName(ingredient.getName()) >= ingredient.getAmount());
   }
@@ -233,21 +244,36 @@ public class Fridge {
    *
    * @param recipeList the Arraylist<code></code> of Recipes to be checked
    * @return an ArrayList of recipes that can be made.
+   * @throws IllegalArgumentException if the parameter is invalid
    */
   public ArrayList<Recipe> returnAllPossibleDishesWithFridgeContent(ArrayList<Recipe> recipeList) {
-    ParamValidators.validateArrayList(recipeList);
+    try {
+      ParamValidators.validateArrayList(recipeList);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Could not find possible dishes:\n" + e.getMessage());
+    }
+
     return recipeList.stream()
         .filter(this::canRecipeBeMadeWithFridgeContent)
         .collect(Collectors.toCollection(ArrayList<Recipe>::new));
   }
 
 
-
-  // getter groceryList
+  /**
+   * Gets the list of groceries in the fridge.
+   *
+   * @return an ArrayList of <code>Grocery</code> objects currently in the fridge.
+   */
   public ArrayList<Grocery> getGroceryList() {
     return groceryList;
   }
 
+  /**
+   * Sets the list of groceries in the fridge.
+   *
+   * @param newGroceryList the new list of groceries to be set
+   * @throws IllegalArgumentException if the new grocery list is invalid
+   */
   private void setGroceryList(ArrayList<Grocery> newGroceryList) {
     try {
       ParamValidators.validateArrayList(newGroceryList);

@@ -5,23 +5,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * A validator for scanner inputs. methods throws <code>IllegalArgumentException</code>s with
- *    appropriate messages if the scanner input is invalid. <code>ScannerValidator</code> has
- *    methods to parse for the possibility to make all exception handling happen in this class.
+ * A validator for scanner inputs. Methods throws <code>IllegalArgumentException</code>s with
+ *    appropriate messages if the scanner input is invalid. <code>ScannerValidator</code> has only
+ *    String as arguments to gather most exception handling in <code>ScannerValidator</code>. All
+ *    methods are static.
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.6.2
+ * @version 0.6.3
  */
 public class ScannerValidator {
 
 
   /**
+   * Parses the passed String to a double and validates.
    * Uses a simple parse function and an if test to validate if the string can be parsed to a valid
    *    positive float.
    *
    * @param inpDoubleAsString a String which shall be parsed.
-   * @return the parsed double value.
+   * @return the parsed valid double value.
    * @throws IllegalArgumentException if the string cannot be parsed to float
    *      or if the number is 0 or less.
    */
@@ -32,6 +34,7 @@ public class ScannerValidator {
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException("\nPlease enter a valid number.");
     }
+
     if (returnValue <= 0) {
       throw new IllegalArgumentException("\nThe number must be more than 0.");
     } else {
@@ -52,20 +55,22 @@ public class ScannerValidator {
   }
 
   /**
-   * Validates if the given string is not empty.
+   * Validates if the given string is not empty and can be parsed to a Date.
    *
-   * @param inpString the string to be validated
-   * @throws IllegalArgumentException if the string is empty
+   * @param inpStringDate the string to be validated and parsed
+   * @return a valid <code>Date</code>
+   * @throws IllegalArgumentException if the string is empty, or cannot be parsed to a
+   *      <code>Date</code>
    */
-  public static Date parseStringToDate(String inpString) {
+  public static Date parseStringToDate(String inpStringDate) {
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     Date expirationDate;
-    if (inpString.equalsIgnoreCase("")) {
+    if (inpStringDate.equalsIgnoreCase("")) {
       throw new IllegalArgumentException("\nThe field cannot be empty.");
     }
     try {
-      expirationDate = dateFormat.parse(inpString);
+      expirationDate = dateFormat.parse(inpStringDate);
     } catch (ParseException e) {
       throw new IllegalArgumentException("\nPlease enter a valid date.");
     }
@@ -78,7 +83,8 @@ public class ScannerValidator {
    * @param inpIntString the string to be parsed and validated
    * @return the parsed valid int value
    * @throws IllegalArgumentException if the string is empty, cannot be parsed to an integer or is
-   *      negative.
+   *      negative or zero
+   *
    */
   public static int parseToPositiveInt(String inpIntString) {
     int returnInt;

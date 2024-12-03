@@ -119,6 +119,9 @@ public class UserInterface {
     }
   }
 
+  /**
+   * Asks the user what Grocery it wants to check the amount of.
+   */
   private void askForWhatGroceryToCheck() {
     System.out.println("What grocery do you want to check?:");
     String inpGrocery = demandValidString();
@@ -126,9 +129,8 @@ public class UserInterface {
   }
 
   /**
-   * Asks the user for all the details of the grocery it wants to add. If the input is invalid, then
-   *    the user get asked again until the input is valid. When all details are filled, the grocery
-   *    is added to the fridge.
+   * Asks the user for all the details of the grocery it wants to add. When all details are filled,
+   *    the grocery is added to the fridge.
    */
   public void askForGroceryToAdd() {
 
@@ -172,7 +174,7 @@ public class UserInterface {
   }
 
   /**
-   * Prints out all items in the fridge, with all it's attributes.
+   * Prints out all items in the fridge with name, amount and measuring unit.
    */
   public void printFridgeContent() {
     System.out.println("The fridge currently contains:");
@@ -184,8 +186,9 @@ public class UserInterface {
   }
 
   /**
-   * Asks what the user wants to remove. The user will get notified if the specified
-   *    <code>Grocery</code> does not exist.
+   * Asks what the user wants to remove. The oldest Grocery will be removed/reduced first. If more
+   *    is asked to remove than is present in Fridge, all the specified Grocery will be removed.
+   * The user will get notified if the specified <code>Grocery</code> does not exist.
    */
   public void askToRemoveGrocery() {
 
@@ -240,10 +243,7 @@ public class UserInterface {
       String measuringUnit = fridge.getMeasuringUnitByName(inpGrocery);
 
       System.out.println("The fridge contains "
-          + fridge.getAmountByName(inpGrocery) + " "
-          + measuringUnit
-          + " of "
-          + inpGrocery + "."
+          + fridge.getAmountByName(inpGrocery) + " " + measuringUnit + " of " + inpGrocery + "."
       );
     } catch (IllegalArgumentException e) {
       if (fridge.getAmountByName(inpGrocery) == 0) {
