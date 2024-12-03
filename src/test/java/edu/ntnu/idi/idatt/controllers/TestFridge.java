@@ -249,7 +249,7 @@ public class TestFridge {
     fridge.addGrocery(name2, 1.0, validDate, 10.0, "dozen");
 
     // Act
-    ArrayList<Grocery> expiredGroceries = fridge.findExpiredGroceries();
+    ArrayList<Grocery> expiredGroceries = fridge.findGroceriesWhichExpiresAfter(new Date());
 
     // Assert
     assertEquals(1, expiredGroceries.size());
@@ -269,7 +269,7 @@ public class TestFridge {
     System.out.println(new Date().toString());
 
     // Act
-    ArrayList<Grocery> expiredGroceries = fridge.findExpiredGroceries();
+    ArrayList<Grocery> expiredGroceries = fridge.findGroceriesWhichExpiresAfter(new Date());
 
     // Assert
     assertTrue(expiredGroceries.isEmpty());

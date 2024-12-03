@@ -15,82 +15,81 @@ public class TestScannerValidator {
   @Test
   void emptyStringShouldThrowIllegalArgumentException() {
     // Arrange
-    ScannerValidator validator = new ScannerValidator();
     String emptyString = "";
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> validator.validateStringScanner(emptyString));
+    assertThrows(IllegalArgumentException.class, () -> ScannerValidator.validateStringScanner(emptyString));
   }
 
   @Test
   void invalidDoubleShouldThrowIllegalArgumentException() {
     // Arrange
-    ScannerValidator validator = new ScannerValidator();
     String invalidDouble = "kjodl";
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> validator.parseToPositiveDouble(invalidDouble));
+    assertThrows(IllegalArgumentException.class, () ->
+        ScannerValidator.parseToPositiveDouble(invalidDouble));
   }
 
   @Test
   void zeroDoubleShouldThrowIllegalArgumentException() {
     // Arrange
-    ScannerValidator validator = new ScannerValidator();
     String zeroDouble = "0";
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> validator.parseToPositiveDouble(zeroDouble));
+    assertThrows(IllegalArgumentException.class, () ->
+        ScannerValidator.parseToPositiveDouble(zeroDouble));
   }
 
   @Test
   void negativeDoubleShouldThrowIllegalArgumentException() {
     // Arrange
-    ScannerValidator validator = new ScannerValidator();
     String negativeDouble = "-1.5";
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> validator.parseToPositiveDouble(negativeDouble));
+    assertThrows(IllegalArgumentException.class, () ->
+        ScannerValidator.parseToPositiveDouble(negativeDouble));
   }
 
 
   @Test
   void emptyDateShouldThrowIllegalArgumentException() {
     // Arrange
-    ScannerValidator validator = new ScannerValidator();
     String emptyDate = "";
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> validator.parseStringToDate(emptyDate));
+    assertThrows(IllegalArgumentException.class, () ->
+        ScannerValidator.parseStringToDate(emptyDate));
   }
 
   @Test
   void invalidIntShouldThrowIllegalArgumentException() {
     // Arrange
-    ScannerValidator validator = new ScannerValidator();
     String invalidInt = "utco";
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> validator.parseToPositiveInt(invalidInt));
+    assertThrows(IllegalArgumentException.class, () ->
+        ScannerValidator.parseToPositiveInt(invalidInt));
   }
 
   @Test
   void negativeIntShouldThrowIllegalArgumentException() {
     // Arrange
-    ScannerValidator validator = new ScannerValidator();
     String negativeInt = "-6";
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> validator.parseToPositiveInt(negativeInt));
+    assertThrows(IllegalArgumentException.class, () ->
+        ScannerValidator.parseToPositiveInt(negativeInt));
   }
 
   @Test
   void emptyIntShouldThrowIllegalArgumentException() {
     // Arrange
-    ScannerValidator validator = new ScannerValidator();
     String emptyInt = "";
 
     // Act & Assert
-    assertThrows(IllegalArgumentException.class, () -> validator.parseToPositiveInt(emptyInt));
+    assertThrows(IllegalArgumentException.class, () ->
+        ScannerValidator.parseToPositiveInt(emptyInt));
   }
 
 }
