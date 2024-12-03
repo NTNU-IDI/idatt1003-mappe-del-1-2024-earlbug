@@ -173,7 +173,7 @@ public class Fridge {
    */
   public ArrayList<Grocery> retrunAlphabeticaclArrayList() {
     return groceryList.stream()
-        .sorted(Comparator.comparing(Grocery::getAmount))
+        .sorted(Comparator.comparing(Grocery::getName))
         .collect(Collectors.toCollection(ArrayList::new));
   }
 
