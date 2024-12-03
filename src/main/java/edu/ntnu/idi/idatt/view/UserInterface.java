@@ -53,8 +53,8 @@ public class UserInterface {
       Date date2 = new Date(); // Today's date.
       Date date3 = dateFormat.parse("2023-10-10");
 
-      fridge.addGrocery("Milk", 1.5, date1, 29.9, "liters");
-      fridge.addGrocery("Bananas", 5, date2, 5.40, "units");
+      fridge.addGrocery("milk", 1.5, date1, 29.9, "liters");
+      fridge.addGrocery("bananas", 5, date2, 5.40, "units");
       fridge.addGrocery("eggs", 12, date3, 2.23, "Units");
     } catch (ParseException e) {
       printRed("The initial groceries dates could not be parsed.");
@@ -83,7 +83,7 @@ public class UserInterface {
         + "1: view contents of the fridge\n"
         + "2: Add grocery to the fridge\n"
         + "3: Remove grocery\n"
-        + "4: View all the expired groceries and its total value\n"
+        + "4: View all the groceries which has expired given a certain date and its total value\n"
         + "5: View how much the fridge contains of a certain grocery\n"
         + "6: Check the combined value of all the groceries in the fridge\n"
         + "7: Sort the groceries alphabetically\n"
@@ -238,6 +238,9 @@ public class UserInterface {
   public void printExpiredGroceries() {
     ArrayList<Grocery> expiredGroceries;
 
+    System.out.println(
+        "Please write the date you want to find out if any groceries has expired before:");
+    System.out.println("The format is as follows: yyyy-MM-dd");
     Date inpDate = demandValidDate();
     expiredGroceries = fridge.findGroceriesWhichExpiresAfter(inpDate);
     double costOfExpiredGroceries = 0;
@@ -250,7 +253,7 @@ public class UserInterface {
       for (Grocery grocery : expiredGroceries) {
         costOfExpiredGroceries += grocery.getPricePerUnit() * grocery.getAmount();
         System.out.println(grocery.getMeasuringUnit() + " of "
-            + grocery.getName() + " expired "
+            + grocery.getName() + " expires "
             + dateFormat.format(grocery.getExpirationDate()) + ".\n"
         );
       }
@@ -313,7 +316,7 @@ public class UserInterface {
     System.out.println("Please write the description of the new dish:");
     String recipeDescription = demandValidString();
 
-    System.out.println("Please write how to make the:");
+    System.out.println("Please write how to make the new dish:");
     String recipeProcedure = demandValidString();
 
     System.out.println("Please write how many different ingredients are needed:");
@@ -321,7 +324,7 @@ public class UserInterface {
 
     ArrayList<Grocery> ingredientList = new ArrayList<>();
     for (int i = 0; i < ingredientAmount; i++) {
-      System.out.println("Please specify grocery nr. " + i + 1);
+      System.out.println("Please specify grocery nr. " + (i + 1));
       ingredientList.add(demandValidIngredientGrocery());
     }
 
@@ -434,7 +437,7 @@ public class UserInterface {
    * Asks the user for a non-empty, non-null String. The method repeats until the user has provided
    *    a valid input.
    *
-   * @return a valid String.
+   * @return a valid lowercase String
    */
   public String demandValidString() {
     String inpString = "";
@@ -502,8 +505,8 @@ public class UserInterface {
    */
   public Grocery demandValidIngredientGrocery() {
     Grocery inpIngredient = null;
-    boolean inpIngredientaccepted = false;
-    while (!inpIngredientaccepted) {
+    boolean inpIngredientAccepted = false;
+    while (!inpIngredientAccepted) {
       try {
         System.out.println("Please write it's name:");
         String ingredientName = demandValidString();
@@ -516,7 +519,7 @@ public class UserInterface {
 
         inpIngredient = new Grocery(ingredientName, ingredientAmount, ingredientMeasuringUnit);
 
-        inpIngredientaccepted = true;
+        inpIngredientAccepted = true;
       } catch (Exception e) {
         printRed(e.getMessage());
       }
