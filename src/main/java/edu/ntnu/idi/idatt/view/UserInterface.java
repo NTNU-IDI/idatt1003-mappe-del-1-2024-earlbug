@@ -208,16 +208,18 @@ public class UserInterface {
   }
 
   /**
-   * Prints a list of all the expired groceries with name, amount and expiration date. The total
-   *    value of all expired groceries will also be displayed.
+   * Prints a list of all the Groceries which expired after the given date with name, amount and
+   *    expiration date. The total value of all expired groceries will also be displayed.
    */
   public void printExpiredGroceries() {
     ArrayList<Grocery> expiredGroceries;
-    expiredGroceries = fridge.findExpiredGroceries();
+
+    Date inpDate = demandValidDate();
+    expiredGroceries = fridge.findGroceriesWhichExpiresAfter(inpDate);
     double costOfExpiredGroceries = 0;
 
     if (expiredGroceries.isEmpty()) {
-      System.out.println("There are no expired groceries!");
+      System.out.println("There are no expired groceries after the given date!");
 
     } else {
       System.out.println("Expired groceries: \n");

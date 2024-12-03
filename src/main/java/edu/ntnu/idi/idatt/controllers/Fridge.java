@@ -57,7 +57,7 @@ public class Fridge {
       ParamValidators.validatePositiveDouble(pricePerUnit);
       ParamValidators.validateString(measuringUnit);
     } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Grocery could not be added:\n" +e.getMessage());
+      throw new IllegalArgumentException("Grocery could not be added:\n" + e.getMessage());
     }
     // If the new grocery exists, increase existing grocery amount.
     newGrocery = new Grocery(nameOfGrocery, amount, expirationDate, pricePerUnit, measuringUnit);
@@ -111,7 +111,7 @@ public class Fridge {
    * @param amountToRemove the amount which shall be removed.
    * @throws IllegalArgumentException if any of the parameters are invalid
    */
-  public void removeGrocery(String inpGrocery, double amountToRemove) throws IllegalArgumentException {
+  public void removeGrocery(String inpGrocery, double amountToRemove) {
     try {
       ParamValidators.validateString(inpGrocery);
       ParamValidators.validatePositiveDouble(amountToRemove);
@@ -139,18 +139,18 @@ public class Fridge {
   }
 
   /**
-   * Finds all expired groceries and returns them as <code>Grocery</code> instances in an
-   *    <code>ArrayList</code>.
+   * Finds all the groceries which expires before the passed date, and returns them as
+   *    <code>Grocery</code> instances in an <code>ArrayList</code>.
    *
-   * @return ArrayList of expired grocery objects. An empty Arraylist is returned of nothing is
+   * @return ArrayList of grocery objects. An empty Arraylist will be returned of nothing is
    *      found.
    */
-  public ArrayList<Grocery> findExpiredGroceries() {
+  public ArrayList<Grocery> findGroceriesWhichExpiresAfter(Date inpDate) {
     return groceryList.stream()
-        .filter(grocery -> grocery.getExpirationDate().before(new Date()))
+        .filter(grocery -> grocery.getExpirationDate().before(inpDate))
         // Collects the elements of a stream to an ArrayList
         // Normally it would be collect to a list.(Collector.toList())
-        .collect(Collectors.toCollection/*static, makes new empty collection*/(ArrayList::new));
+        .collect(Collectors.toCollection(ArrayList::new));
   }
 
   /**
