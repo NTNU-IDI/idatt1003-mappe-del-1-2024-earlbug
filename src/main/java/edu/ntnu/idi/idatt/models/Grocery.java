@@ -10,7 +10,7 @@ import java.util.Date;
  *    class where only the amount can be changed.
  *
  * @author Erlend Sundsdal
- * @version 0.6.3
+ * @version 0.7.0
  * @since 0.1.0
  * @see edu.ntnu.idi.idatt.utils.ScannerValidator
  */

@@ -62,6 +62,12 @@ public class CookBook {
     return this.recipeList;
   }
 
+  /**
+   * Gets a recipe from the cookbook by its name.
+   *
+   * @param inpName the name of the recipe to retrieve
+   * @return the recipe with the specified name, or null if not found
+   */
   public Recipe getRecipeByName(String inpName) {
     return recipeList.stream()
         .filter(recipe -> recipe.getName().equalsIgnoreCase(inpName))

@@ -12,7 +12,7 @@ import java.util.Date;
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.6.3
+ * @version 0.7.0
  */
 public class ScannerValidator {
 
