@@ -171,7 +171,7 @@ public class Fridge {
    *
    * @return an ArrayList of Groceries sorted alphabetically.
    */
-  public ArrayList<Grocery> retrunAlfabeticaclArrayList() {
+  public ArrayList<Grocery> retrunAlphabeticaclArrayList() {
     return groceryList.stream()
         .sorted(Comparator.comparing(Grocery::getAmount))
         .collect(Collectors.toCollection(ArrayList::new));

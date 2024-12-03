@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Scanner;
 
 /**
@@ -86,6 +87,7 @@ public class UserInterface {
         + "4: View all the expired groceries and its total value\n"
         + "5: View how much the fridge contains of a certain grocery\n"
         + "6: Check the combined value of all the groceries in the fridge\n"
+        + "7: Sort the groceries alphabetically\n"
         + "\n"
     );
 
@@ -113,6 +115,8 @@ public class UserInterface {
       case 6:
         printTotalValueOfGroceriesInFridge();
         break;
+      case 7:
+
       default:
         printRed(inpMenuChoice + " is not an option.");
         break;
@@ -234,6 +238,8 @@ public class UserInterface {
     }
   }
 
+
+
   /**
    * Prints how much of the specified <code>Grocery</code> is present in the <code>Fridge</code>.
    *
@@ -277,6 +283,18 @@ public class UserInterface {
   public void printTotalValueOfGroceriesInFridge() {
     System.out.println("The total value of all the groceries in the fridge are "
         + fridge.getValueOfGroceriesInFridge() + " NOK.");
+  }
+
+  /**
+   * Prints all content of Fridge alphabetically, with name and amount.
+   */
+  public void printFridgeContentAlphabetically() {
+    System.out.println("The fridge currently contains:");
+    for (Grocery grocery : fridge.retrunAlphabeticaclArrayList()) {
+      System.out.println(grocery.getAmount() + " " + grocery.getMeasuringUnit() + " of "
+          + grocery.getName()
+      );
+    }
   }
 
   /**
