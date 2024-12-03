@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @since 0.6.2
  * @author Erlend Sundsdal
- * @version 0.6.3
+ * @version 0.7.0
  */
 public class CookBook {
 
@@ -60,5 +60,12 @@ public class CookBook {
    */
   public ArrayList<Recipe> getRecipeList() {
     return this.recipeList;
+  }
+
+  public Recipe getRecipeByName(String inpName) {
+    return recipeList.stream()
+        .filter(recipe -> recipe.getName().equalsIgnoreCase(inpName))
+        .findFirst()
+        .orElse(null);
   }
 }

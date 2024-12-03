@@ -11,7 +11,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Scanner;
 
 /**
@@ -22,7 +21,7 @@ import java.util.Scanner;
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.6.2
+ * @version 0.7.0
  */
 public class UserInterface {
 
@@ -88,6 +87,11 @@ public class UserInterface {
         + "5: View how much the fridge contains of a certain grocery\n"
         + "6: Check the combined value of all the groceries in the fridge\n"
         + "7: Sort the groceries alphabetically\n"
+        + "8: Add a recipe to the cook book\n"
+        + "9: Check if the fridge contains enough ingredients to make a certain dish\n"
+        + "10: Check what recipes can be made with the groceries currently in the fridge\n"
+        + "11: View all recipes\n"
+        + "12: View one whole recipe\n"
         + "\n"
     );
 
@@ -116,7 +120,23 @@ public class UserInterface {
         printTotalValueOfGroceriesInFridge();
         break;
       case 7:
-
+        printFridgeContentAlphabetically();
+        break;
+      case 8:
+        askForRecipeToAddToCookBook();
+        break;
+      case 9:
+        canDishBeMadeFromFridge();
+        break;
+      case 10:
+        whatDishesCanBeMadeWithFridge();
+        break;
+      case 11:
+        printAllRecipes();
+        break;
+      case 12:
+        askWhatRecipeToPrint();
+        break;
       default:
         printRed(inpMenuChoice + " is not an option.");
         break;
@@ -264,20 +284,6 @@ public class UserInterface {
 
 
   /**
-   * Prints out which of the dishes in <code>CookBook</code> can be made based off what groceries
-   *    are present in <code>groceryList</code>.
-   */
-  public void printAllPossibleDishesWithFridgeContent() {
-    ArrayList<Recipe> listOfPossibleDishes = fridge.returnAllPossibleDishesWithFridgeContent(
-        cookBook.getRecipeList());
-
-    System.out.println("Dishes that can be made with the items currently in the fridge:");
-    for (Recipe recipe : listOfPossibleDishes) {
-      System.out.println(recipe.getName());
-    }
-  }
-
-  /**
    * Prints the total value of all the groceries in the fridge.
    */
   public void printTotalValueOfGroceriesInFridge() {
@@ -296,6 +302,111 @@ public class UserInterface {
       );
     }
   }
+
+  /**
+   * Asks the user for details about the new recipe, and adds it to <code>cookBook</code>.
+   */
+  public void askForRecipeToAddToCookBook() {
+    System.out.println("Please write the name of the new dish:");
+    String recipeName = demandValidString();
+
+    System.out.println("Please write the description of the new dish:");
+    String recipeDescription = demandValidString();
+
+    System.out.println("Please write how to make the:");
+    String recipeProcedure = demandValidString();
+
+    System.out.println("Please write how many different ingredients are needed:");
+    int ingredientAmount = demandPositiveInt();
+
+    ArrayList<Grocery> ingredientList = new ArrayList<>();
+    for (int i = 0; i < ingredientAmount; i++) {
+      System.out.println("Please specify grocery nr. " + i + 1);
+      ingredientList.add(demandValidIngredientGrocery());
+    }
+
+    System.out.println("Please write how many portions the dish yields: ");
+    int portions = demandPositiveInt();
+
+    try {
+      cookBook.addRecipe(recipeName, recipeDescription, recipeProcedure, ingredientList, portions);
+      System.out.println(recipeName + " added successfully.");
+    } catch (IllegalArgumentException e) {
+      printRed(e.getMessage());
+    }
+  }
+
+  /**
+   * Prints out all dished which can be made based on what <code>fridge</code> contains.
+   */
+  public void whatDishesCanBeMadeWithFridge() {
+    ArrayList<Recipe> recipeList =
+        fridge.returnAllPossibleDishesWithFridgeContent(cookBook.getRecipeList());
+    if (recipeList.isEmpty()) {
+      System.out.println("No dishes can be made..");
+    } else {
+      System.out.println("Dishes that can be made:");
+      for (Recipe recipe : recipeList) {
+        System.out.println(recipe.getName());
+      }
+    }
+  }
+
+  /**
+   * Prints the name of all recipes in <code>CookBook</code>.
+   */
+  public void printAllRecipes() {
+    System.out.println("Recipes in the cook book:");
+    for (Recipe recipe : cookBook.getRecipeList()) {
+      System.out.println(recipe.getName());
+    }
+  }
+
+  /**
+   * Asks the user what recipe to print, then prints it.
+   */
+  public void askWhatRecipeToPrint() {
+    System.out.println("What recipe do you want to view?");
+    Recipe recipe = cookBook.getRecipeByName(demandValidString());
+    if (recipe == null) {
+      System.out.println("The dish does not exist.");
+    } else {
+      System.out.println("\nRecipe name:");
+      System.out.println(recipe.getName());
+      System.out.println("\nDescription:");
+      System.out.println(recipe.getDescription());
+      System.out.println("\nHow to make it:");
+      System.out.println(recipe.getProcedure());
+      System.out.println("\nRecipe name:");
+      System.out.println(recipe.getName());
+      System.out.println("\nIngredient list:");
+      for (Grocery ingredient : recipe.getIngredientList()) {
+        System.out.println(ingredient.getAmount() + " " + ingredient.getMeasuringUnit() + " of "
+            + ingredient.getName());
+      }
+      System.out.println("\nAnd yields " + recipe.getPortions() + " portions.");
+    }
+  }
+
+  /**
+   * Asks the user for what dish it wants to check, and gives an answer whether the dish can be made
+   *    based on what the fridge contains.
+   */
+  public void canDishBeMadeFromFridge() {
+    System.out.println("Please write what dish you want to check:");
+    String inpDish = demandValidString();
+    Recipe recipe = cookBook.getRecipeByName(inpDish);
+    if (recipe == null) {
+      System.out.println("The dish does not exist.");
+    } else {
+      if (fridge.canRecipeBeMadeWithFridgeContent(recipe)) {
+        System.out.println("Yes, the dish can be made!");
+      } else {
+        System.out.println("No, the dish cannot be made.");
+      }
+    }
+  }
+
 
   /**
    * Asks the user for a positive integer. The method repeats until the user has provided a valid
@@ -381,6 +492,36 @@ public class UserInterface {
       }
     }
     return expirationDate;
+  }
+
+  /**
+   * Asks the user for details of a new Grocery ingredient. The method repeats until the user has
+   *    provided a valid input.
+   *
+   * @return a valid Grocery ingredient.
+   */
+  public Grocery demandValidIngredientGrocery() {
+    Grocery inpIngredient = null;
+    boolean inpIngredientaccepted = false;
+    while (!inpIngredientaccepted) {
+      try {
+        System.out.println("Please write it's name:");
+        String ingredientName = demandValidString();
+
+        System.out.println("Please write it's amount:");
+        double ingredientAmount = demandPositiveDouble();
+
+        System.out.println("Please write it's measuring unit:");
+        String ingredientMeasuringUnit = demandValidString();
+
+        inpIngredient = new Grocery(ingredientName, ingredientAmount, ingredientMeasuringUnit);
+
+        inpIngredientaccepted = true;
+      } catch (Exception e) {
+        printRed(e.getMessage());
+      }
+    }
+    return inpIngredient;
   }
 
 

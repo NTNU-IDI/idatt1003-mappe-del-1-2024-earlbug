@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  *
  * @since 0.1.0
  * @author Erlend Sundsdal
- * @version 0.6.3
+ * @version 0.7.0
  */
 public class Fridge {
 
@@ -226,7 +226,7 @@ public class Fridge {
    * @return true if the dish can be made, false if not
    * @throws IllegalArgumentException if the parameter is invalid
    */
-  public boolean canRecipeBeMadeWithFridgeContent(Recipe recipe) throws IllegalArgumentException {
+  public boolean canRecipeBeMadeWithFridgeContent(Recipe recipe) {
     try {
       ParamValidators.validateRecipe(recipe);
     } catch (IllegalArgumentException e) {
