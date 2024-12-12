@@ -7,7 +7,7 @@ This file uses Mark Down syntax. For more information see [here](https://www.mar
 [//]: # (TODO: Fill inn your name and student ID)
 
 STUDENT NAME = "Erlend Sundsdal"  
-STUDENT ID = "137464"
+STUDENT ID = "10071"
 
 ## Project description
 
