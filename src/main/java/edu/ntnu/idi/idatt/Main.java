@@ -16,7 +16,6 @@ public class Main {
    *    instance of UserInterface and starts the program for the user.
    */
   public static void main(String[] args) {
-    System.out.println("Hello World!");
 
     // Starts UserInterface, and then also the whole program.
     UserInterface ui = new UserInterface();

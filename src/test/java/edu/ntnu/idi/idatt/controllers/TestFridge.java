@@ -266,7 +266,6 @@ public class TestFridge {
     Fridge fridge = new Fridge();
     fridge.addGrocery(name1, 1.0, validDate1, 20.5, "liter");
     fridge.addGrocery(name2, 1.0, validDate2, 10.0, "dozen");
-    System.out.println(new Date().toString());
 
     // Act
     ArrayList<Grocery> expiredGroceries = fridge.findGroceriesWhichExpiresAfter(new Date());
